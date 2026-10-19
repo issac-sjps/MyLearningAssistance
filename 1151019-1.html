@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>國語文修辭 20 題全對大挑戰與練習系統</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+    
+    body {
+      font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #f8fafc;
+      color: #1e293b;
+    }
+
+    /* Right-side Zhuyin Annotation Styling */
+    .zh-wrapper {
+      display: inline-flex;
+      align-items: baseline;
+      margin: 0 1px;
+      line-height: 1.4;
+    }
+    
+    .zh-char {
+      font-size: 1.05em;
+    }
+
+    .zhuyin-text {
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      font-size: 0.55em;
+      line-height: 1;
+      color: #d97706; /* Warm amber for Zhuyin */
+      margin-left: 1.5px;
+      user-select: none;
+      font-weight: 600;
+      letter-spacing: -1px;
+    }
+
+    /* Hide Zhuyin Class */
+    body.hide-zhuyin .zhuyin-text {
+      display: none !important;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+  <!-- Header Bar -->
+  <header class="bg-indigo-700 text-white shadow-lg sticky top-0 z-30 no-print">
+    <div class="max-w-5xl mx-auto px-4 py-3.5 flex flex-wrap justify-between items-center gap-3">
+      <div class="flex items-center gap-3">
+        <div class="bg-white text-indigo-700 p-2.5 rounded-2xl shadow-md flex items-center justify-center">
+          <i class="fa-solid fa-graduation-cap text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-black tracking-wide flex items-center gap-2">
+            國語文修辭 20 題大挑戰
+          </h1>
+          <p class="text-indigo-200 text-xs hidden sm:block">答題即時解說 • 右側標準注音 • 全對認證卡</p>
+        </div>
+      </div>
+
+      <!-- Controls & Stats -->
+      <div class="flex items-center gap-3 text-xs sm:text-sm">
+        <!-- Zhuyin Toggle Button -->
+        <button onclick="toggleZhuyin()" id="btn-toggle-zhuyin" class="bg-indigo-800 hover:bg-indigo-900 text-amber-300 border border-indigo-500/40 px-3 py-2 rounded-xl font-bold flex items-center gap-1.5 transition shadow-sm">
+          <i class="fa-solid fa-font"></i>
+          <span>注音：顯示中</span>
+        </button>
+
+        <div class="bg-indigo-800/90 px-3 py-1.5 rounded-xl border border-indigo-500/30 text-center">
+          <span class="block text-indigo-200 text-[10px]">最高紀錄</span>
+          <span id="stat-best-score" class="font-black text-sm text-emerald-300">0 / 20</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-4xl mx-auto px-4 py-6 flex-1 w-full">
+
+    <!-- SCREEN 1: WELCOME & DASHBOARD -->
+    <section id="screen-welcome" class="space-y-6">
+      <!-- Hero Banner -->
+      <div class="bg-gradient-to-br from-indigo-700 via-indigo-800 to-purple-900 text-white rounded-3xl p-6 sm:p-10 shadow-xl relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
+          <i class="fa-solid fa-book-open text-[220px]"></i>
+        </div>
+        <div class="max-w-2xl relative z-10 space-y-4">
+          <span class="inline-flex items-center gap-1.5 bg-amber-400/20 text-amber-300 border border-amber-400/30 text-xs font-extrabold px-3 py-1 rounded-full">
+            <i class="fa-solid fa-sparkles"></i> 國語文修辭專題練習系統
+          </span>
+          <h2 class="text-2xl sm:text-4xl font-black leading-tight">
+            掌握 20 種經典修辭<br><span class="text-amber-300">即時檢視解說</span> 衝向滿分！
+          </h2>
+          <p class="text-indigo-100 text-sm sm:text-base leading-relaxed opacity-95">
+            點選選項後<strong class="text-amber-300 font-bold">馬上顯示對錯與詳細解析</strong>！注音符號標示於<strong class="text-amber-300 font-bold">國字右側</strong>，符合台灣標準課本風格。需達到 <span class="bg-amber-400 text-slate-900 px-2 py-0.5 rounded font-black">20 / 20 全對</span> 才算完美通關並解鎖老師檢查卡！
+          </p>
+          <div class="pt-2">
+            <button onclick="startQuiz()" class="bg-amber-400 hover:bg-amber-300 text-slate-900 font-black px-8 py-4 rounded-2xl shadow-xl hover:shadow-amber-400/30 transition transform hover:-translate-y-0.5 text-lg flex items-center gap-3">
+              <i class="fa-solid fa-play text-xl"></i> 開始 20 題隨機測驗
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Key Features Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3.5">
+          <div class="bg-indigo-100 text-indigo-600 p-3 rounded-xl shrink-0">
+            <i class="fa-solid fa-bolt text-lg"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-800 text-sm mb-1">即時對錯與詳細解析</h3>
+            <p class="text-slate-500 text-xs leading-relaxed">點選答案後立刻顯示正確與否，並展開關鍵修辭觀念解析。</p>
+          </div>
+        </div>
+        
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3.5">
+          <div class="bg-amber-100 text-amber-700 p-3 rounded-xl shrink-0">
+            <i class="fa-solid fa-font text-lg"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-800 text-sm mb-1">右側標準注音排版</h3>
+            <p class="text-slate-500 text-xs leading-relaxed">注音符號排列於國字右側，可依需求自由開啟或隱藏。</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3.5">
+          <div class="bg-emerald-100 text-emerald-600 p-3 rounded-xl shrink-0">
+            <i class="fa-solid fa-award text-lg"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-800 text-sm mb-1">100% 全對老師簽章卡</h3>
+            <p class="text-slate-500 text-xs leading-relaxed">需全對 20 題才算通關，自動生成專屬老師檢查憑證。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- History Table Log -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+          <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+            <i class="fa-solid fa-clock-rotate-left text-indigo-600"></i> 歷次測驗成績紀錄
+          </h3>
+          <button onclick="clearHistory()" class="text-xs text-slate-400 hover:text-rose-500 transition flex items-center gap-1">
+            <i class="fa-solid fa-trash-can"></i> 清除紀錄
+          </button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="text-slate-400 border-b border-slate-100">
+                <th class="py-2.5 px-3">次數</th>
+                <th class="py-2.5 px-3">測驗時間</th>
+                <th class="py-2.5 px-3">得分</th>
+                <th class="py-2.5 px-3">正確率</th>
+                <th class="py-2.5 px-3">狀態</th>
+              </tr>
+            </thead>
+            <tbody id="history-table-body" class="divide-y divide-slate-100">
+              <!-- Injected by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: ACTIVE QUIZ VIEW -->
+    <section id="screen-quiz" class="hidden space-y-5">
+      
+      <!-- Progress Bar & Status -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+          <span class="bg-indigo-100 text-indigo-700 font-black px-3 py-1 rounded-xl text-xs whitespace-nowrap">
+            第 <span id="current-q-num">1</span> / 20 題
+          </span>
+          <div class="w-full sm:w-48 bg-slate-100 rounded-full h-2.5 overflow-hidden">
+            <div id="quiz-progress-fill" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300" style="width: 5%"></div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-5 text-xs text-slate-600 w-full sm:w-auto justify-between sm:justify-end">
+          <div><i class="fa-regular fa-clock text-slate-400 mr-1"></i>用時：<strong id="timer-text" class="text-slate-800 font-mono">00:00</strong></div>
+          <div><i class="fa-solid fa-check text-emerald-500 mr-1"></i>已答對：<strong id="live-correct-count" class="text-emerald-600 font-bold">0</strong> / 20</div>
+        </div>
+      </div>
+
+      <!-- Question Fast Nav Buttons -->
+      <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+        <div id="question-nav-grid" class="grid grid-cols-10 sm:grid-cols-20 gap-1 text-center">
+          <!-- 1-20 buttons injected by JS -->
+        </div>
+      </div>
+
+      <!-- Main Question Box -->
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-md p-6 sm:p-8 space-y-6">
+        
+        <!-- Question Tag & Sentence -->
+        <div class="space-y-3">
+          <div class="flex items-center gap-2">
+            <span id="question-tag" class="bg-indigo-50 text-indigo-700 border border-indigo-200/80 text-xs font-bold px-3 py-1 rounded-lg">
+              修辭辨析
+            </span>
+          </div>
+          <h3 id="question-text" class="text-lg sm:text-xl font-bold text-slate-800 leading-relaxed">
+            <!-- Question with Zhuyin injected -->
+          </h3>
+        </div>
+
+        <!-- Four Options -->
+        <div id="options-container" class="space-y-3">
+          <!-- Options injected by JS -->
+        </div>
+
+        <!-- Immediate Explanation Box (Appears instantly after option click) -->
+        <div id="immediate-explanation-box" class="hidden transition-all duration-300 transform rounded-2xl p-5 border-2 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span id="explain-result-badge" class="font-black text-sm px-3 py-1 rounded-lg flex items-center gap-1.5">
+              <!-- Result Badge -->
+            </span>
+            <span class="text-xs text-slate-400 font-bold">修辭重點解析</span>
+          </div>
+          <div id="explain-content" class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
+            <!-- Explanation injected -->
+          </div>
+        </div>
+
+        <!-- Bottom Actions (Next Question Button) -->
+        <div class="flex justify-between items-center pt-3 border-t border-slate-100">
+          <span class="text-xs text-slate-400">點選選項後將自動核對答案並展開解說</span>
+          <button id="btn-next" onclick="nextQuestion()" class="hidden bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-7 py-3 rounded-xl shadow-md transition flex items-center gap-2 text-sm">
+            <span>下一題</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SCREEN 3: RESULT SUMMARY SCREEN -->
+    <section id="screen-result" class="hidden space-y-6">
+      
+      <!-- Result Banner Card -->
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 text-center space-y-6">
+        <div id="result-badge-icon" class="w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl shadow-inner">
+          <!-- Icon injected -->
+        </div>
+
+        <div class="space-y-2">
+          <h2 id="result-status-title" class="text-2xl sm:text-3xl font-black text-slate-800">
+            <!-- Title -->
+          </h2>
+          <p id="result-status-desc" class="text-slate-500 max-w-md mx-auto text-xs sm:text-sm leading-relaxed">
+            <!-- Description -->
+          </p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl mx-auto text-left">
+          <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+            <span class="block text-slate-400 text-[11px]">答對題數</span>
+            <span id="res-score-text" class="text-xl font-black text-slate-800">0 / 20</span>
+          </div>
+          <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+            <span class="block text-slate-400 text-[11px]">正確率</span>
+            <span id="res-accuracy-text" class="text-xl font-black text-indigo-600">0%</span>
+          </div>
+          <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+            <span class="block text-slate-400 text-[11px]">測驗用時</span>
+            <span id="res-time-text" class="text-xl font-black text-slate-800">00:00</span>
+          </div>
+          <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+            <span class="block text-slate-400 text-[11px]">通關標準</span>
+            <span class="text-xl font-black text-amber-500">20 / 20</span>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap justify-center gap-3 pt-2">
+          <button id="btn-unlock-certificate" onclick="openTeacherCertificate()" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white font-black px-7 py-3 rounded-2xl shadow-lg shadow-emerald-600/30 transition transform hover:-translate-y-0.5 flex items-center gap-2 text-sm">
+            <i class="fa-solid fa-award text-lg"></i> 🎓 開啟【老師檢查通關卡】
+          </button>
+
+          <button onclick="startQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-7 py-3 rounded-2xl shadow-md transition flex items-center gap-2 text-sm">
+            <i class="fa-solid fa-rotate-right"></i> 重新測驗 (題目亂序)
+          </button>
+
+          <button onclick="showWelcomeScreen()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-5 py-3 rounded-2xl transition text-sm">
+            <i class="fa-solid fa-house"></i> 回首頁
+          </button>
+        </div>
+      </div>
+
+      <!-- Detailed Question Breakdown -->
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-md p-6 space-y-4">
+        <h3 class="font-bold text-slate-800 text-base flex items-center gap-2 border-b border-slate-100 pb-3">
+          <i class="fa-solid fa-list-check text-indigo-600"></i> 本次測驗完整複習總覽
+        </h3>
+        <div id="review-list" class="space-y-4">
+          <!-- Injected by JS -->
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- TEACHER CERTIFICATE MODAL -->
+  <div id="modal-certificate" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 overflow-y-auto no-print">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border-4 border-amber-400 relative space-y-6 my-8">
+      
+      <button onclick="closeTeacherCertificate()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <!-- Printable Certificate Area -->
+      <div id="printable-certificate" class="bg-amber-50/40 p-6 rounded-2xl border-2 border-dashed border-amber-300 text-center space-y-4 relative overflow-hidden">
+        
+        <!-- Watermark -->
+        <div class="absolute -right-6 -bottom-6 opacity-15 pointer-events-none transform -rotate-12">
+          <div class="w-36 h-36 rounded-full border-8 border-rose-600 flex items-center justify-center text-rose-600 font-black text-2xl">
+            滿分 100%
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-3 py-0.5 rounded-full uppercase tracking-wider">
+            修辭測驗滿分通關憑證
+          </span>
+          <h2 class="text-xl font-black text-slate-800 pt-1">🎓 國語文修辭 20 題全對檢查卡</h2>
+          <p class="text-xs text-slate-500">（此憑證代表學生已達成 20 / 20 題全對滿分紀錄）</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 text-left space-y-2.5 text-xs text-slate-700">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 mb-0.5">學生姓名：</label>
+            <input type="text" id="cert-student-name" placeholder="請在此輸入學生姓名" class="w-full border-b-2 border-indigo-500 font-bold text-base text-slate-800 focus:outline-none pb-0.5 bg-transparent" value="國語好手">
+          </div>
+          
+          <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100">
+            <div><strong>挑戰成績：</strong> <span class="text-emerald-600 font-bold">20 / 20 (100%)</span></div>
+            <div><strong>挑戰次數：</strong> <span id="cert-attempt-count" class="font-bold text-slate-800">1</span> 次</div>
+            <div><strong>完成日期：</strong> <span id="cert-date-text" class="font-bold text-slate-800">2026/10/12</span></div>
+            <div><strong>完成用時：</strong> <span id="cert-time-text" class="font-bold text-slate-800">02:30</span></div>
+          </div>
+        </div>
+
+        <div class="bg-amber-100/70 p-3.5 rounded-xl border border-amber-300 text-center space-y-1.5">
+          <div class="text-amber-900 font-bold text-xs flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-stamp text-rose-600 text-base"></i> 老師檢核與簽章專區
+          </div>
+          <div class="flex justify-around items-center pt-1">
+            <div>
+              <span class="block text-[10px] text-slate-400">檢核結果</span>
+              <span class="inline-block bg-rose-600 text-white font-black text-[11px] px-2.5 py-0.5 rounded shadow-sm">
+                🈴 20題全對認證
+              </span>
+            </div>
+            <div class="border-l border-amber-300 pl-4">
+              <span class="block text-[10px] text-slate-400">老師簽名 / 蓋章</span>
+              <div class="w-24 h-7 border-b border-dashed border-slate-400 flex items-center justify-center text-[10px] text-slate-400 italic">
+                ( 請老師簽名 )
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="flex justify-between items-center pt-1">
+        <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow">
+          <i class="fa-solid fa-print"></i> 列印 / 另存 PDF
+        </button>
+        <button onclick="closeTeacherCertificate()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow">
+          確認完閉
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400 no-print">
+    <p>國語文修辭 20 題全對大挑戰 • 支援即時解說與右側標準注音排版</p>
+  </footer>
+
+  <script>
+    // Raw Questions Database with Zhuyin Markup Format: 國[ㄍㄨㄛˊ]字[ㄗˋ]
+    const rawQuestionsData = [
+      {
+        id: 1,
+        question: "太[ㄊㄞˋ]陽[ㄧㄤˊ]像[ㄒㄧㄤˋ]一[ㄧˋ]顆[ㄎㄜ]巨[ㄐㄩˋ]大[ㄉㄚˋ]的[˙ㄉㄜ]火[ㄏㄨㄛˇ]球[ㄑㄧㄡˊ]，高[ㄍㄠ]高[ㄍㄠ]懸[ㄒㄩㄢˊ]掛[ㄍㄨㄚˋ]在[ㄗㄞˋ]天[ㄊㄧㄢ]空[ㄎㄨㄥ]中[ㄓㄨㄥ]。這[ㄓㄜˋ]句[ㄐㄩˋ]話[ㄏㄨㄚˋ]使[ㄕˇ]用[ㄩㄥˋ]了[˙ㄌㄜ]哪[ㄋㄚˇ]一[ㄧˋ]種[ㄓㄨㄥˇ]修[ㄒㄧㄡ]辭[ˊ]？",
+        tag: "譬喻（明喻）",
+        options: [
+          { text: "譬[ㄆㄧˋ]喻[ㄩˋ]（明[ㄇㄧㄥˊ]喻[ㄩˋ]）", isCorrect: true },
+          { text: "轉[ㄓㄨㄢˇ]化[ㄏㄨㄚˋ]（擬[ㄋㄧˇ]人[ㄖㄣˊ]）", isCorrect: false },
+          { text: "誇[ㄎㄨㄚ]飾[ㄕˋ]", isCorrect: false },
+          { text: "排[ㄆㄞˊ]比[ㄅㄧˇ]", isCorrect: false }
+        ],
+        explanation: "句[ㄐㄩˋ]中[ㄓㄨㄥ]將[ㄐㄧㄤ]「太[ㄊㄞˋ]陽[ㄧㄤˊ]」比[ㄅㄧˇ]方[ㄈㄤ]成[ㄔㄥˊ]「火[ㄏㄨㄛˇ]球[ㄑㄧㄡˊ]」，並[ㄅㄧㄥˋ]且[ㄑㄧㄝˇ]使[ㄕˇ]用[ㄩㄥˋ]了[˙ㄌㄜ]喻[ㄩˋ]詞[ˊ]「像[ㄒㄧㄤˋ]」，是[ㄕˋ]典[ㄉㄧㄢˇ]型[ㄒㄧㄥˊ]的[˙ㄉㄜ]「明[ㄇㄧㄥˊ]喻[ㄩˋ]」修[ㄒㄧㄡ]辭[ˊ]。"
+      },
+      {
+        id: 2,
+        question: "微[ㄨㄟ]風[ㄈㄥ]在[ㄗㄞˋ]樹[ㄕㄨˋ]葉[ㄧㄝˋ]間[ㄐㄧㄢ]輕[ㄑㄧㄥ]柔[ㄖㄡˊ]地[˙ㄉㄜ]吟[ㄧㄣˊ]唱[ㄔㄤˋ]，喚[ㄏㄨㄢˋ]醒[ㄒㄧㄥˇ]了[˙ㄌㄜ]沉[ㄔㄣˊ]睡[ㄕㄨㄟˋ]的[˙ㄉㄜ]大[ㄉㄚˋ]地[ㄉㄧˋ]。這[ㄓㄜˋ]句[ㄐㄩˋ]話[ㄏㄨㄚˋ]使[ㄕˇ]用[ㄩㄥˋ]了[˙ㄌㄜ]哪[ㄋㄚˇ]種[ㄓㄨㄥˇ]修[ㄒㄧㄡ]辭[ˊ]？",
+        tag: "轉化（擬人）",
+        options: [
+          { text: "轉[ㄓㄨㄢˇ]化[ㄏㄨㄚˋ]（擬[ㄋㄧˇ]人[ㄖㄣˊ]）", isCorrect: true },
+          { text: "對[ㄉㄨㄟˋ]偶[ㄡˇ]", isCorrect: false },
+          { text: "借[ㄐㄧㄝˋ]代[ㄉㄞˋ]", isCorrect: false },
+          { text: "頂[ㄉㄧㄥˇ]真[ㄓㄣ]", isCorrect: false }
+        ],
+        explanation: "將[ㄐㄧㄤ]無[ㄨˊ]生[ㄕㄥ]命[ㄇㄧㄥˋ]的[˙ㄉㄜ]「微[ㄨㄟ]風[ㄈㄥ]」與[ㄩˇ]「大[ㄉㄚˋ]地[ㄉㄧˋ]」賦[ㄈㄨˋ]予[ㄩˇ]人[ㄖㄣˊ]類[ㄌㄟˋ]的[˙ㄉㄜ]「吟[ㄧㄣˊ]唱[ㄔㄤˋ]」與[ㄩˇ]「沉[ㄔㄣˊ]睡[ㄕㄨㄟˋ]」動[ㄉㄨㄥˋ]作[ㄗㄨㄛˋ]，屬[ㄕㄨˇ]於[ㄩˊ]擬[ㄋㄧˇ]人[ㄖㄣˊ]修[ㄒㄧㄡ]辭[ˊ]。"
+      },
+      {
+        id: 3,
+        question: "危[ㄨㄟ]樓[ㄌㄡˊ]高[ㄍㄠ]百[ㄅㄞˇ]尺[ head... ㄔˇ]，手[ㄕㄡˇ]可[ㄎㄜˇ]摘[ㄓㄞ]星[ㄒㄧㄥ]辰[ㄔㄣˊ]。這[ㄓㄜˋ]句[ㄐㄩˋ]詩[ㄕ]主[ㄓㄨˇ]要[ㄧㄠˋ]使[ㄕˇ]用[ㄩㄥˋ]了[˙ㄌㄜ]哪[ㄋㄚˇ]種[ㄓㄨㄥˇ]修[ㄒㄧㄡ]辭[ˊ]？",
+        tag: "誇飾修辭",
+        options: [
+          { text: "誇[ㄎㄨㄚ]飾[ㄕˋ]", isCorrect: true },
+          { text: "設[ㄕㄜˋ]問[ㄨㄣˋ]", isCorrect: false },
+          { text: "映[ㄧㄥˋ]襯[ㄔㄣˋ]", isCorrect: false },
+          { text: "倒[ㄉㄠˋ]裝[ㄓㄨㄤ]", isCorrect: false }
+        ],
+        explanation: "形[ㄒㄧㄥˊ]容[ㄖㄨㄥˊ]高[ㄍㄠ]樓[ㄌㄡˊ]極[ㄐㄧˊ]高[ㄍㄠ]，甚[ㄕㄣˊ]至[ㄓˋ]連[ㄌㄧㄢˊ]手[ㄕㄡˇ]都[ㄉㄡ]能[ㄋㄥˊ]摘[ㄓㄞ]下[ㄒㄧㄚˋ]星[ㄒㄧㄥ]星星[ㄒㄧㄥ]，是[ㄕˋ]遠[ㄩㄢˇ]遠[ㄩㄢˇ]超[ㄔㄠ]過[ㄍㄨㄛˋ]客[ㄎㄜˋ]觀[ㄍㄨㄢ]事[ㄕˋ]實[ㄕˊ]的[˙ㄉㄜ]誇[ㄎㄨㄚ]張[ㄓㄨㄤ]描[ㄇㄧㄠˊ]寫[ㄒㄧㄝˇ]，屬[ㄕㄨˇ]於[ㄩˊ]誇[ㄎㄨㄚ]飾[ㄕˋ]。"
+      },
+      {
+        id: 4,
+        question: "朱[ㄓㄨ]門[ㄇㄣˊ]酒[ㄐㄧㄡˇ]肉[ㄖㄡˋ]臭[ head... ㄔㄡˋ]，路[ㄌㄨˋ]有[ㄧㄡˇ]凍[ㄉㄨㄥˋ]死[ㄙˇ]骨[ㄍㄨˇ]。這[ㄓㄜˋ]句[ㄐㄩˋ]話[ㄏㄨㄚˋ]運[ㄩㄣˋ]用[ㄩㄥˋ]了[˙ㄌㄜ]哪[ㄋㄚˇ]一[ㄧˋ]種[ㄓㄨㄥˇ]修[ㄒㄧㄡ]辭[ˊ]？",
+        tag: "映襯修辭",
+        options: [
+          { text: "映[ㄧㄥˋ]襯[ㄔㄣˋ]", isCorrect: true },
+          { text: "層[ beden... ㄘㄥˊ]遞[ㄉㄧˋ]", isCorrect: false },
+          { text: "迴[ㄏㄨㄟˊ]環[ㄏㄨㄢˊ]", isCorrect: false },
+          { text: "引用[ㄧㄣˇ]用[ㄩㄥˋ]", isCorrect: false }
+        ],
+        explanation: "將[ㄐㄧㄤ]富[ㄈㄨˋ]貴[ㄍㄨㄟˋ]人[ㄖㄣˊ]家[ㄐㄧㄚ]的[˙ㄉㄜ]奢[ㄕㄜ]華[ㄏㄨㄚˊ]酒[ㄐㄧㄡˇ]肉[ㄖㄡˋ]與[ㄩˇ]窮[ㄑㄧㄨㄥˊ]苦[ㄎㄨˇ]百姓[ㄒㄧㄥ]的[˙ㄉㄜ]凍[ㄉㄨㄥˋ]死[ㄙˇ]悲[ㄅㄟ]劇[ㄐㄩˋ]同[ㄊㄨㄥˊ]時[ㄕˊ]對[ㄉㄨㄟˋ]比[ㄅㄧˇ]，屬[ㄕㄨˇ]於[ㄩˊ]強[ㄑㄧㄤˊ]烈[ㄌㄧㄝˋ]的[˙ㄉㄜ]映[ㄧㄥˋ]襯[ㄔㄣˋ]修[ㄒㄧㄡ]辭[ˊ]。"
+      },
+      {
+        id: 5,
+        question: "巾[ㄐㄧㄣ]幗[ㄍㄨㄛˊ]不[ㄅㄨˋ]讓[ㄖㄤˋ]須[ㄒㄩ]眉[ㄇㄟˊ]。句[ㄐㄩˋ]中[ㄓㄨㄥ]「巾[ㄐㄧㄣ]幗[ㄍㄨㄛˊ]」代[ㄉㄞˋ]表[ㄅㄧㄠˇ]女[ㄋㄩˇ]性[ㄒㄧㄥˋ]，「須[ㄒㄩ]眉[ㄇㄟˊ]」代[ㄉㄞˋ]表[ㄅㄧㄠˇ]男[ㄋㄢˊ]性[ㄒㄧㄥˋ]，這[ㄓㄜˋ]是[ㄕˋ]使[ㄕˇ]用[ㄩㄥˋ]了[˙ㄌㄜ]什[ㄕㄣˊ]麼[˙ㄇㄜ]修[ㄒㄧㄡ]辭[ˊ]？",
+        tag: "借代修辭",
+        options: [
+          { text: "借[ㄐㄧㄝˋ]代[ㄉㄞˋ]", isCorrect: true },
+          { text: "雙[ㄕㄨㄤ]關[ㄍㄨㄢ]", isCorrect: false },
+          { text: "呼[ㄏㄨ]告[ㄍㄠˋ]", isCorrect: false },
+          { text: "譬[ㄆㄧˋ]喻[ㄩˋ]", isCorrect: false }
+        ],
+        explanation: "「巾[ㄐㄧㄣ]幗[ㄍㄨㄛˊ]」是[ㄕˋ]婦[ㄈㄨˋ]女[ㄋㄩˇ]頭[ㄊㄡˊ]巾[ㄐㄧㄣ]，借[ㄐㄧㄝˋ]指[ㄓˇ]女[ㄋㄩˇ]性[ㄒㄧㄥˋ]；「須[ㄒㄩ]眉[ㄇㄟˊ]」是[ㄕˋ]男[ㄋㄢˊ]子[ㄗˇ]鬍[ㄏㄨˊ]須[ㄒㄩ]眉[ㄇㄟˊ]毛[ㄇㄠˊ]，借[ㄐㄧㄝˋ]指[ㄓˇ]男[ㄋㄢˊ]性[ㄒㄧㄥˋ]，此[ˇ]為[ㄨㄟˊ]借[ㄐㄧㄝˋ]代[ㄉㄞˋ]修[ㄒㄧㄡ]辭[ˊ]。"
+      },
+      {
+        id: 6,
+        question: "什[ㄕㄣˊ]麼[˙ㄇㄜ]是[ㄕˋ]成[ㄔㄥˊ]功[ㄍㄨㄥ]的[˙ㄉㄜ]關[ㄍㄨㄢ]鍵[ㄐㄧㄢˋ]？那[ㄋㄚˋ]就[ㄐㄧㄡˋ]是[ㄕˋ]永[ㄩㄥˇ]不[ㄅㄨˋ]放[ㄈㄤˋ]棄[ㄑㄧˋ]的[˙ㄉㄜ]堅[ㄐㄧㄢ]持[ㄔˊ]。這[ㄓㄜˋ]屬於[ㄩˊ]設[ㄕㄜˋ]問[ㄨㄣˋ]中[ㄓㄨㄥ]的[˙ㄉㄜ]哪[ㄋㄚˇ]一[ㄧˋ]種[ㄓㄨㄥˇ]？",
+        tag: "設問（提問）",
+        options: [
+          { text: "提[ㄊㄧˊ]問[ㄨㄣˋ]（自[ㄗˋ]問[ㄨㄣˋ]自[ㄗˋ]答[ㄉㄚˊ]）", isCorrect: true },
+          { text: "激[ㄐㄧ]問[ㄨㄣˋ]（反[ㄈㄢˇ]問[ㄨㄣˋ]）", isCorrect: false },
+          { text: "疑[ㄧˊ]問[ㄨㄣˋ]（問[ㄨㄣˋ]而[ㄦˊ]不[ㄅㄨˋ]答[ㄉㄚˊ]）", isCorrect: false },
+          { text: "感[ㄍㄢˇ]嘆[ㄊㄢˋ]問[ㄨㄣˋ]", isCorrect: false }
+        ],
+        explanation: "說[ㄕㄨㄛ]話[ㄏㄨㄚˋ]者[ㄓㄜˇ]先[ㄒㄧㄢ]提[ㄊㄧˊ]出[ㄔㄨ]問[ㄨㄣˋ]題[ㄊㄧˊ]，隨[ㄙㄨㄟˊ]後[ㄏㄡˋ]自[ㄗˋ]己[ㄐㄧˇ]說[ㄕㄨㄛ]出[ㄔㄨ]正[ㄓㄥˋ]確[ㄑㄩㄝˋ]答[ㄉㄚˊ]案[ㄢˋ]，這[ㄓㄜˋ]屬[ㄕㄨˇ]於[ㄩˊ]設[ㄕㄜˋ]問[ㄨㄣˋ]修[ㄒㄧㄡ]辭[ˊ]中[ㄓㄨㄥ]的[˙ㄉㄜ]「提[ㄊㄧˊ]問[ㄨㄣˋ]」。"
+      },
+      {
+        id: 7,
+        question: "難[ㄋㄢˊ]道[ㄉㄠˋ]我[ㄨㄛˇ]們[˙ㄇㄣ]不[ㄅㄨˋ]該[ㄍㄞ]為[ㄨㄟˋ]生[ㄕㄥ]存[存... ㄘㄨㄣˊ]的[˙ㄉㄜ]地[ㄉㄧˋ]球[ㄑㄧㄡˊ]盡[ㄐㄧㄣˋ]一[ㄧˋ]份[ㄈㄣˋ]心[ㄒㄧㄣ]力[ㄌㄧˋ]嗎[˙ㄇㄚ]？這[ㄓㄜˋ]句[ㄐㄩˋ]話[ㄏㄨㄚˋ]屬[ㄕㄨˇ]於[ㄩˊ]哪[ㄋㄚˇ]種[ㄓㄨㄥˇ]設[ㄕㄜˋ]問[ㄨㄣˋ]？",
+        tag: "設問（激問）",
+        options: [
+          { text: "激[ㄐㄧ]問[ㄨㄣˋ]（反[ㄈㄢˇ]問[ㄨㄣˋ]）", isCorrect: true },
+          { text: "提[ㄊㄧˊ]問[ㄨㄣˋ]（自[ㄗˋ]問[ㄨㄣˋ]自[ㄗˋ]答[ㄉㄚˊ]）", isCorrect: false },
+          { text: "疑[ㄧˊ]問[ㄨㄣˋ]", isCorrect: false },
+          { text: "誇[ㄎㄨㄚ]飾[ㄕˋ]問[ㄨㄣˋ]", isCorrect: false }
+        ],
+        explanation: "答[ㄉㄚˊ]案[ㄢˋ]已[ㄧˇ]經[ㄐㄧㄥ]隱[ㄧㄣˇ]含[ㄏㄢˊ]在[ㄗㄞˋ]反[ㄈㄢˇ]面[ㄇㄧㄢˋ]問[ㄨㄣˋ]句[ㄐㄩˋ]中[ㄓㄨㄥ]（意[ㄧˋ]思[ㄙ]是[ㄕˋ]「當然[ㄖㄢˊ]要[ㄧㄠˋ]」），不[ㄅㄨˋ]需[ㄒㄩ]要[ㄧㄠˋ]回[ㄏㄨㄟˊ]答[ㄉㄚˊ]，屬[ㄕㄨˇ]於[ㄩˊ]「激[ㄐㄧ]問[ㄨㄣˋ]」。"
+      },
+      {
+        id: 8,
+        question: "白[ㄅㄞˊ]日[ㄖˋ]依[ㄧ]山[ㄕㄢ]盡[ㄐㄧㄣˋ]，黃[ㄏㄨㄤˊ]河[ㄏㄜˊ]入[ㄖㄨˋ]海[ㄏㄞˇ]流[ㄌㄧㄡˊ]。這[ㄓㄜˋ]句[ㄐㄩˋ]詩[ㄕ]使[ㄕˇ]用[ㄩㄥˋ]了[˙ㄌㄜ]哪[ㄋㄚˇ]一[ㄧˋ]種[ㄓㄨㄥˇ]修[ㄒㄧㄡ]辭[ˊ]？",
+        tag: "對偶修辭",
+        options: [
+          { text: "對[ㄉㄨㄟˋ]偶[ㄡˇ]", isCorrect: true },
+          { text: "排[ㄆㄞˊ]比[ㄅㄧˇ]", isCorrect: false },
+          { text: "頂[ㄉㄧㄥˇ]真[ㄓㄣ]", isCorrect: false },
+          { text: "層[ㄘㄥˊ]遞[ㄉㄧˋ]", isCorrect: false }
+        ],
+        explanation: "上下[ㄒㄧㄚˋ]兩[ㄌㄧㄤˇ]句[ㄐㄩˋ]字[ㄗˋ]數[ㄕㄨˋ]相[ㄒㄧㄤ]等[ㄉㄥˇ]、結[ㄐㄧㄝˊ]構[ㄍㄡˋ]相[ㄒㄧㄤ]同[ㄊㄨㄥˊ]、詞[ˊ]性[ㄒㄧㄥˋ]相[ㄒㄧㄤ]對[ㄉㄨㄟˋ]（白[ㄅㄞˊ]日[ㄖˋ]對[ㄉㄨㄟˋ]黃[ㄏㄨㄤˊ]河[ㄏㄜˊ]），屬[ㄕㄨˇ]於[ㄩˊ]對[ㄉㄨㄟˋ]偶[ㄡˇ]修[ㄒㄧㄡ]辭[ˊ]。"
+      },
+      {
+        id: 9,
+        question: "愛[ㄞˋ]心[ㄒㄧㄣ]是[ㄕˋ]冬[ㄉㄨㄥ]日[ㄖˋ]陽[ㄧㄤˊ]光[ㄍㄨㄤ]，愛[ㄞˋ]心[ㄒㄧㄣ]是[ㄕˋ]沙漠[ㄇㄛˋ]清[ㄑㄧㄥ]泉[ㄑㄩㄢˊ]，愛[ㄞˋ]心[ㄒㄧㄣ]是[ㄕˋ]夜[ㄧㄝˋ]空[ㄎㄨㄥ]北[ㄅㄟˇ]極[ㄐㄧˊ]星[ㄒㄧㄥ]。這[ㄓㄜˋ]使[ㄕˇ]用[ㄩㄥˋ]了[˙ㄌㄜ]哪[ㄋㄚˇ]種[ㄓㄨㄥˇ]修[ㄒㄧㄡ]辭[ˊ]？",
+        tag: "排比修辭",
+        options: [
+          { text: "排[ㄆㄞˊ]比[ㄅㄧˇ]", isCorrect: true },
+          { text: "對[ㄉㄨㄟˋ]偶[ㄡˇ]", isCorrect: false },
+          { text: "迴[ㄏㄨㄟˊ]環[ㄏㄨㄢˊ]", isCorrect: false },
+          { text: "倒[ㄉㄠˋ]裝[ㄓㄨㄤ]", isCorrect: false }
+        ],
+        explanation: "由[ㄧㄡˊ]三[ㄙㄢ]個[ㄍㄜˋ]以[ㄧˇ]上[ㄕㄤˋ]結[ㄐㄧㄝˊ]構[ㄍㄡˋ]相[ㄒㄧㄤ]同[ㄊㄨㄥˊ]、語[ㄩˇ]氣[ㄑㄧˋ]一[ㄧˋ]致[ㄓˋ]的[˙ㄉㄜ]句[ㄐㄩˋ]子[ㄗˇ]連[ㄌㄧㄢˊ]續[ㄒㄩˋ]排[ㄆㄞˊ]列[ㄌㄧㄝˋ]，屬[ㄕㄨˇ]於[ㄩˊ]排[ㄆㄞˊ]比[ㄅㄧˇ]修[ㄒㄧㄡ]辭[ˊ]。"
+      },
+      {
+        id: 10,
+        question: "東[ㄉㄨㄥ]邊[ㄅㄧㄢ]日[ㄖˋ]出[ㄔㄨ]西[ㄒㄧ]邊[ㄅㄧㄢ]雨[ㄩˇ]，道[ㄉㄠˋ]是[ㄕˋ]無[ㄨˊ]晴[ㄑㄧㄥ]卻[ㄑㄩㄝˋ]有[ㄧㄡˇ]晴[ㄑㄧㄥ]。這[ㄓㄜˋ]句[ㄐㄩˋ]詩[ㄕ]主[ㄓㄨˇ]要[ㄧㄠˋ]使[ㄕˇ]用[ㄩㄥˋ]了[˙ㄌㄜ]哪[ㄋㄚˇ]種[ㄓㄨㄥˇ]修[ㄒㄧㄡ]辭[ˊ]？",
+        tag: "雙關修辭",
+        options: [
+          { text: "雙[ㄕㄨㄤ]關[ㄍㄨㄢ]（諧[ㄒㄧㄝˊ]音[ㄧㄣ]雙[ㄕㄨㄤ]關[ㄍㄨㄢ]）", isCorrect: true },
+          { text: "誇[ㄎㄨㄚ]飾[ㄕˋ]", isCorrect: false },
+          { text: "借[ㄐㄧㄝˋ]代[ㄉㄞˋ]", isCorrect: false },
+          { text: "呼[ㄏㄨ]告[ㄍㄠˋ]", isCorrect: false }
+        ],
+        explanation: "利[ㄌㄧˋ]用[ㄩㄥˋ]晴[ㄑㄧㄥ]朗[ㄌㄤˇ]的[˙ㄉㄜ]「晴[ㄑㄧㄥ]」與[ㄩˇ]情[ㄑㄧㄥˊ]感[ㄍㄢˇ]的[˙ㄉㄜ]「情[ㄑㄧㄥˊ]」同[ㄊㄨㄥˊ]音[ㄧㄣ]，同[ㄊㄨㄥˊ]時[ㄕˊ]表[ㄅㄧㄠˇ]達[ㄉㄚˊ]天[ㄊㄧㄢ]氣[ㄑㄧˋ]與[ㄩˇ]心[ㄒㄧㄣ]意[ㄧˋ]，屬[ㄕㄨˇ]於[ㄩˊ]諧[ㄒㄧㄝˊ]音[ㄧㄣ]雙[ㄕㄨㄤ]關[ㄍㄨㄢ]。"
+      },
+      {
+        id: 11,
+        question: "聽[ㄊㄧㄥ]見[ㄐㄧㄢˋ]潺[ㄔㄢˊ]潺[ㄔㄢˊ]水[ㄕㄨㄟˇ]聲[ㄕㄥ]，聞[ㄨㄣˊ]到[ㄉㄠˋ]陣[ㄓㄣˋ]陣[ㄓㄣˋ]花[ㄏㄨㄚ]香[ㄒㄧㄤ]，吹[ㄔㄨㄟ]著[˙ㄓㄜ]涼[ㄌㄧㄤˊ]爽[ㄕㄨㄤˇ]晚[ㄨㄢˇ]風[ㄈㄥ]。這[ㄓㄜˋ]主[ㄓㄨˇ]要[ㄧㄠˋ]是[ㄕˋ]哪[ㄋㄚˇ]種[ㄓㄨㄥˇ]修[ㄒㄧㄡ]辭[ˊ]？",
+        tag: "感官摹寫",
+        options: [
+          { text: "感[ㄍㄢˇ]官[ㄍㄨㄢ]摹[ㄇㄛˊ]寫[ㄒㄧㄝˇ]（聽[ㄊㄧㄥ]、嗅[ㄒㄧㄡˋ]、觸[ㄔㄨˋ]覺[ㄐㄧㄨㄝˊ]）", isCorrect: true },
+          { text: "譬[ㄆㄧˋ]喻[ㄩˋ]", isCorrect: false },
+          { text: "頂[ㄉㄧㄥˇ]真[ㄓㄣ]", isCorrect: false },
+          { text: "倒[ㄉㄠˋ]裝[ㄓㄨㄤ]", isCorrect: false }
+        ],
+        explanation: "分別[ㄅㄧㄝˊ]透過[ㄍㄨㄛˋ]水[ㄕㄨㄟˇ]聲[ㄕㄥ]（聽[ㄊㄧㄥ]覺[ㄐㄧㄨㄝˊ]）、花[ㄏㄨㄚ]香[ㄒㄧㄤ]（嗅[ㄒㄧㄡˋ]覺[ㄐㄧㄨㄝˊ]）與[ㄩˇ]涼[ㄌㄧㄤˊ]風[ㄈㄥ]（觸[ㄔㄨˋ]覺[ㄐㄧㄨㄝˊ]）進[ㄐㄧㄣˋ]行[ㄒㄧㄥˊ]細[ㄒㄧˋ]膩[ㄋㄧˋ]描[ㄇㄧㄠˊ]繪[ㄏㄨㄟˋ]，為[ㄨㄟˊ]感[ㄍㄢˇ]官[ㄍㄨㄢ]摹[ㄇㄛˊ]寫[ㄒㄧㄝˇ]。"
+      },
+      {
+        id: 12,
+        question: "知[ㄓ]之[ㄓ]者[ㄓㄜˇ]不[ㄅㄨˋ]如[ㄖㄨˊ]好[ㄏㄠˋ]之[ㄓ]者[ㄓㄜˇ]，好[ㄏㄠˋ]之[ㄓ]者[ㄓㄜˇ]不[ㄅㄨˋ]如[ㄖㄨˊ]樂[ㄌㄜˋ]之[ㄓ]者[ㄓㄜˇ]。這[ㄓㄜˋ]包含[ㄏㄢˊ]了[˙ㄌㄜ]哪[ㄋㄚˇ]些[ㄒㄧㄝ]修[ㄒㄧㄡ]辭[ˊ]？",
+        tag: "頂真與層遞",
+        options: [
+          { text: "頂[ㄉㄧㄥˇ]真[ㄓㄣ]與[ㄩˇ]層[ㄘㄥˊ]遞[ㄉㄧˋ]", isCorrect: true },
+          { text: "誇[ㄎㄨㄚ]飾[ㄕˋ]與[ㄩˇ]倒[ㄉㄠˋ]裝[ㄓㄨㄤ]", isCorrect: false },
+          { text: "雙[ㄕㄨㄤ]關[ㄍㄨㄢ]與[ㄩˇ]借[ㄐㄧㄝˋ]代[ㄉㄞˋ]", isCorrect: false },
+          { text: "呼[ㄏㄨ]告[ㄍㄠˋ]與[ㄩˇ]引用[ㄧㄣˇ]用[ㄩㄥˋ]", isCorrect: false }
+        ],
+        explanation: "前[ㄑㄧㄢˊ]句[ㄐㄩˋ]結[ㄐㄧㄝˊ]尾[ㄨㄟˇ]「好[ㄏㄠˋ]之[ㄓ]者[ㄓㄜˇ]」做[ㄗㄨㄛˋ]為[ㄨㄟˊ]後[ㄏㄡˋ]句[ㄐㄩˋ]開[ㄎㄞ]頭[ㄊㄡˊ]為[ㄨㄟˊ]「頂[ㄉㄧㄥˇ]真[ㄓㄣ]」；境[ㄐㄧㄥˋ]界[ㄐㄧㄝˋ]由[ㄧㄡˊ]知[ㄓ]、好[ㄏㄠˋ]到[ㄉㄠˋ]樂[ㄌㄜˋ]層[ㄘㄥˊ]層[ㄘㄥˊ]推[ㄊㄨㄟ]進[ㄐㄧㄣˋ]為[ㄨㄟˊ]「層[ㄘㄥˊ]遞[ㄉㄧˋ]」。"
+      },
+      {
+        id: 13,
+        question: "修[ㄒㄧㄡ]身[ㄕㄣ]、齊[ㄑㄧˊ]家[ㄐㄧㄚ]、治[ㄓˋ]國[ㄍㄨㄛˊ]、平[ㄆㄧㄥˊ]天[ㄊㄧㄢ]下[ㄒㄧㄚˋ]。這[ㄓㄜˋ]句[ㄐㄩˋ]話[ㄏㄨㄚˋ]體[ㄊㄧˇ]現[ㄒㄧㄢˋ]了[˙ㄌㄜ]哪[ㄋㄚˇ]種[ㄓㄨㄥˇ]修[ㄒㄧㄡ]辭[ˊ]？",
+        tag: "層遞修辭",
+        options: [
+          { text: "層[ㄘㄥˊ]遞[ㄉㄧˋ]", isCorrect: true },
+          { text: "誇[ㄎㄨㄚ]飾[ㄕˋ]", isCorrect: false },
+          { text: "對[ㄉㄨㄟˋ]偶[ㄡˇ]", isCorrect: false },
+          { text: "迴[ㄏㄨㄟˊ]環[ㄏㄨㄢˊ]", isCorrect: false }
+        ],
+        explanation: "由[ㄧㄡˊ]個人[ㄖㄣˊ]（修[ㄒㄧㄡ]身[ㄕㄣ]）向[ㄒㄧㄤˋ]外[ㄨㄞˋ]擴[ㄎㄨㄛˋ]展[ㄓㄢˇ]到[ㄉㄠˋ]天[ㄊㄧㄢ]下[ㄒㄧㄚˋ]，依[ㄧ]據[ㄐㄩˋ]規[ㄍㄨㄟ]模[ㄇㄛˊ]大[ㄉㄚˋ]小[ㄒㄧㄠˇ]層[ㄘㄥˊ]層[ㄘㄥˊ]遞[ㄉㄧˋ]進[ㄐㄧㄣˋ]，屬[ㄕㄨˇ]於[ㄩˊ]層[ㄘㄥˊ]遞[ㄉㄧˋ]修[ㄒㄧㄡ]辭[ˊ]。"
+      },
+      {
+        id: 14,
+        question: "竹[ㄓㄨ]喧[ㄏㄨㄢ]歸[ㄍㄨㄟ]浣[ㄏㄨㄢˋ]女[ㄋㄩˇ]，蓮[ㄌㄧㄢˊ]動[ㄉㄨㄥˋ]下[ㄒㄧㄚˋ]漁[ㄩˊ]舟[ㄓㄡ]。（正[ㄓㄥˋ]常[ㄔㄤˊ]語[ㄩˇ]序[ㄒㄩˋ]為[ㄨㄟˊ]：浣[ㄏㄨㄢˋ]女[ㄋㄩˇ]歸[ㄍㄨㄟ]，竹[ㄓㄨ]喧[ㄏㄨㄢ]；漁[ㄩˊ]舟[ㄓㄡ]下[ㄒㄧㄚˋ]，蓮[ㄌㄧㄢˊ]動[ㄉㄨㄥˋ]）這[ㄓㄜˋ]是[ㄕˋ]什[ㄕㄣˊ]麼[˙ㄇㄜ]修[ㄒㄧㄡ]辭[ˊ]？",
+        tag: "倒裝修辭",
+        options: [
+          { text: "倒[ㄉㄠˋ]裝[ㄓㄨㄤ]", isCorrect: true },
+          { text: "頂[ㄉㄧㄥˇ]真[ㄓㄣ]", isCorrect: false },
+          { text: "譬[ㄆㄧˋ]喻[ㄩˋ]", isCorrect: false },
+          { text: "雙[ㄕㄨㄤ]關[ㄍㄨㄢ]", isCorrect: false }
+        ],
+        explanation: "為[ㄨㄟˊ]了[˙ㄌㄜ]詩[ㄕ]歌[ㄍㄜ]韻[ㄩㄣˋ]律[ㄌㄩˋ]或[ㄏㄨㄛˋ]文[ㄨㄣˊ]氣[ㄑㄧˋ]順[ㄕㄨㄣˋ]暢[ㄔㄤˋ]，顛[ㄉㄧㄢ]倒[ㄉㄠˇ]了[˙ㄌㄜ]正[ㄓㄥˋ]常[ㄔㄤˊ]句[ㄐㄩˋ]子[ㄗˇ]語[ㄩˇ]序[ㄒㄩˋ]，屬[ㄕㄨˇ]於[ㄩˊ]倒[ㄉㄠˋ]裝[ㄓㄨㄤ]修[ㄒㄧㄡ]辭[ˊ]。"
+      },
+      {
+        id: 15,
+        question: "孔[ㄎㄨㄥˇ]子[ㄗˇ]說[ㄕㄨㄛ]：「溫[ㄨㄣ]故[ㄍㄨˋ]而[ㄦˊ]知[ㄓ]新[ㄒㄧㄣ]。」我[ㄨㄛˇ]們[˙ㄇㄣ]應[ㄧㄥ]當[ㄉㄤ]時[ㄕˊ]常[ㄔㄤˊ]複[ㄈㄨˋ]習[ㄒㄧˊ]。這[ㄓㄜˋ]句[ㄐㄩˋ]話[ㄏㄨㄚˋ]使[ㄕˇ]用[ㄩㄥˋ]了[˙ㄌㄜ]哪[ㄋㄚˇ]種[ㄓㄨㄥˇ]修[ㄒㄧㄡ]辭[ˊ]？",
+        tag: "引用修辭",
+        options: [
+          { text: "引[ㄧㄣˇ]用[ㄩㄥˋ]", isCorrect: true },
+          { text: "誇[ㄎㄨㄚ]飾[ㄕˋ]", isCorrect: false },
+          { text: "借[ㄐㄧㄝˋ]代[ㄉㄞˋ]", isCorrect: false },
+          { text: "擬[ㄋㄧˇ]人[ㄖㄣˊ]", isCorrect: false }
+        ],
+        explanation: "援[ㄩㄢˊ]引[ㄧㄣˇ]至[ㄓˋ]聖[ㄕㄥˋ]先[ㄒㄧㄢ]師[ㄕ]孔[ㄎㄨㄥˇ]子[ㄗˇ]的[˙ㄉㄜ]名[ㄇㄧㄥˊ]言[ㄧㄢˊ]佳[ㄐㄧㄚ]句[ㄐㄩˋ]來[ㄌㄞˊ]印[ㄧㄣˋ]證[ㄓㄥˋ]道[ㄉㄠˋ]理[ㄌㄧˇ]，屬[ㄕㄨˇ]於[ㄩˊ]引[ㄧㄣˇ]用[ㄩㄥˋ]修[ㄒㄧㄡ]辭[ˊ]。"
+      },
+      {
+        id: 16,
+        question: "朋[ㄆㄥˊ]友[ㄧㄡˇ]們[˙ㄇㄣ]！讓[ㄖㄤˋ]我[ㄨㄛˇ]們[˙ㄇㄣ]攜[ㄒㄧ]手[ㄕㄡˇ]同[ㄊㄨㄥˊ]心[ㄒㄧㄣ]為[ㄨㄟˋ]未[ㄨㄟˋ]來[ㄌㄞˊ]打[ㄉㄚˇ]拼[ㄆㄧㄣ]！這[ㄓㄜˋ]句[ㄐㄩˋ]話[ㄏㄨㄚˋ]使[ㄕˇ]用[ㄩㄥˋ]了[˙ㄌㄜ]哪[ㄋㄚˇ]種[ㄓㄨㄥˇ]修[ㄒㄧㄡ]辭[ˊ]？",
+        tag: "呼告修辭",
+        options: [
+          { text: "呼[ㄏㄨ]告[ㄍㄠˋ]", isCorrect: true },
+          { text: "對[ㄉㄨㄟˋ]偶[ㄡˇ]", isCorrect: false },
+          { text: "雙[ㄕㄨㄤ]關[ㄍㄨㄢ]", isCorrect: false },
+          { text: "層[ㄘㄥˊ]遞[ㄉㄧˋ]", isCorrect: false }
+        ],
+        explanation: "說[ㄕㄨㄛ]話[ㄏㄨㄚˋ]時[ㄕˊ]直[ㄓˊ]接[ㄐㄧㄝˋ]呼[ㄏㄨ]喚[ㄏㄨㄢˋ]聽[ㄊㄧㄥ]眾[ㄓㄨㄥˋ]或[ㄏㄨㄛˋ]對[ㄉㄨㄟˋ]象[ㄒㄧㄤˋ]，抒[ㄕㄨ]發[ㄈㄚ]強[ㄑㄧㄤˊ]烈[ㄌㄧㄝˋ]情[ㄑㄧㄥˊ]感[ㄍㄢˇ]，屬[ㄕㄨˇ]於[ㄩˊ]呼[ㄏㄨ]告[ㄍㄠˋ]修[ㄒㄧㄡ]辭[ˊ]。"
+      },
+      {
+        id: 17,
+        question: "黃[ㄏㄨㄤˊ]山[ㄕㄢ]落[ㄌㄨㄛˋ]葉[ㄧㄝˋ]松[ㄙㄨㄥ]，松[ㄙㄨㄥ]葉[ㄧㄝˋ]落[ㄌㄨㄛˋ]山[ㄕㄢ]黃[ㄏㄨㄤˊ]。這[ㄓㄜˋ]種[ㄓㄨㄥˇ]順[ㄕㄨㄣˋ]讀[ㄉㄨˊ]倒[ㄉㄠˋ]讀[ㄉㄨˊ]皆[ㄐㄧㄝ]成[ㄔㄥˊ]文[ㄨㄣˊ]的[˙ㄉㄜ]句[ㄐㄩˋ]型[ㄒㄧㄥˊ]屬[ㄕㄨˇ]於[ㄩˊ]什[ㄕㄣˊ]麼[˙ㄇㄜ]修[ㄒㄧㄡ]辭[ˊ]？",
+        tag: "迴環修辭",
+        options: [
+          { text: "迴[ㄏㄨㄟˊ]環[ㄏㄨㄢˊ]", isCorrect: true },
+          { text: "頂[ㄉㄧㄥˇ]真[ㄓㄣ]", isCorrect: false },
+          { text: "排[ㄆㄞˊ]比[ㄅㄧˇ]", isCorrect: false },
+          { text: "誇[ㄎㄨㄚ]飾[ㄕˋ]", isCorrect: false }
+        ],
+        explanation: "利用[ㄩㄥˋ]詞[ˊ]語[ㄩˇ]回[ㄏㄨㄟˊ]環[ㄏㄨㄢˊ]往[ㄨㄤˇ]複[ㄈㄨˋ]排列[ㄌㄧㄝˋ]，使[ㄕˇ]上下[ㄒㄧㄚˋ]句[ㄐㄩˋ]詞[ˊ]彙[ㄏㄨㄟˋ]相同[ㄊㄨㄥˊ]但[ㄉㄢˋ]排列[ㄌㄧㄝˋ]次[ˋ]序[ㄒㄩˋ]相反[ㄈㄢˇ]，為[ㄨㄟˊ]迴[ㄏㄨㄟˊ]環[ㄏㄨㄢˊ]修[ㄒㄧㄡ]辭[ˊ]。"
+      },
+      {
+        id: 18,
+        question: "他[ㄊㄚ]將[ㄐㄧㄤ]滿[ㄇㄢˇ]腔[ㄑㄧㄤ]怒[ㄋㄨˋ]火[ㄏㄨㄛˇ]化[ㄏㄨㄚˋ]為[ㄨㄟˊ]灰[ㄏㄨㄟ]燼[ㄐㄧㄣˋ]。這[ㄓㄜˋ]把[ㄅㄚˇ]人[ㄖㄣˊ]的[˙ㄉㄜ]理[ㄌㄧˇ]智[ㄓˋ]與[ㄩˇ]情[ㄑㄧㄥˊ]緒[ㄒㄩˋ]當[ㄉㄤ]作[ㄗㄨㄛˋ]物[ㄨˋ]品[ㄆㄧㄣˇ]描[ㄇㄧㄠˊ]寫[ㄒㄧㄝˇ]，屬[ㄕㄨˇ]於[ㄩˊ]轉[ㄓㄨㄢˇ]化[ㄏㄨㄚˋ]中[ㄓㄨㄥ]的[˙ㄉㄜ]哪[ㄋㄚˇ]種[ㄓㄨㄥˇ]？",
+        tag: "轉化（擬物）",
+        options: [
+          { text: "擬[ㄋㄧˇ]物[ㄨˋ]（人[ㄖㄣˊ]物[ㄨˋ]物[ㄨˋ]化[ㄏㄨㄚˋ]）", isCorrect: true },
+          { text: "擬[ㄋㄧˇ]人[ㄖㄣˊ]", isCorrect: false },
+          { text: "借[ㄐㄧㄝˋ]代[ㄉㄞˋ]", isCorrect: false },
+          { text: "映[ㄧㄥˋ]襯[ㄔㄣˋ]", isCorrect: false }
+        ],
+        explanation: "把[ㄅㄚˇ]人[ㄖㄣˊ]的[˙ㄉㄜ]抽[ㄔㄡ]象[ㄒㄧㄤˋ]情[ㄑㄧㄥˊ]緒[ㄒㄩˋ]「怒[ㄋㄨˋ]火[ㄏㄨㄛˇ]」當[ㄉㄤ]作[ㄗㄨㄛˋ]可[ㄎㄜˇ]燃[ㄖㄢˊ]燒[ㄕㄠ]的[˙ㄉㄜ]具[ㄐㄩˋ]體[ㄊㄧˇ]物品[ㄆㄧㄣˇ]描[ㄇㄧㄠˊ]繪[ㄏㄨㄟˋ]，屬[ㄕㄨˇ]於[ㄩˊ]轉[ㄓㄨㄢˇ]化[ㄏㄨㄚˋ]中[ㄓㄨㄥ]的[˙ㄉㄜ]「擬[ㄋㄧˇ]物[ㄨˋ]」。"
+      },
+      {
+        id: 19,
+        question: "勝[ㄕㄥˋ]者[ㄓㄜˇ]不[ㄅㄨˋ]驕[ㄐㄧㄠ]，敗[ㄅㄞˋ]者[ㄓㄜˇ]不[ㄅㄨˋ]餒[ㄋㄟˇ]。這[ㄓㄜˋ]句[ㄐㄩˋ]話[ㄏㄨㄚˋ]主[ㄓㄨˇ]要[ㄧㄠˋ]運[ㄩㄣˋ]用[ㄩㄥˋ]了[˙ㄌㄜ]哪[ㄋㄚˇ]種[ㄓㄨㄥˇ]修[ㄒㄧㄡ]辭[ˊ]？",
+        tag: "映襯修辭",
+        options: [
+          { text: "映[ㄧㄥˋ]襯[ㄔㄣˋ]", isCorrect: true },
+          { text: "誇[ㄎㄨㄚ]飾[ㄕˋ]", isCorrect: false },
+          { text: "頂[ㄉㄧㄥˇ]真[ㄓㄣ]", isCorrect: false },
+          { text: "設[ㄕㄜˋ]問[ㄨㄣˋ]", isCorrect: false }
+        ],
+        explanation: "把[ㄅㄚˇ]「勝[ㄕㄥˋ]者[ㄓㄜˇ]」與[ㄩˇ]「敗[ㄅㄞˋ]者[ㄓㄜˇ]」、「驕[ㄐㄧㄠ]」與[ㄩˇ]「餒[ㄋㄟˇ]」兩[ㄌㄧㄤˇ]種[ㄓㄨㄥˇ]相[ㄒㄧㄤ]反[ㄈㄢˇ]的[˙ㄉㄜ]對[ㄉㄨㄟˋ]象[ㄒㄧㄤˋ]對[ㄉㄨㄟˋ]比[ㄅㄧˇ]，屬[ㄕㄨˇ]於[ㄩˊ]映[ㄧㄥˋ]襯[ㄔㄣˋ]修[ㄒㄧㄡ]辭[ˊ]。"
+      },
+      {
+        id: 20,
+        question: "一[ㄧˋ]日[ㄖˋ]不[ㄅㄨˋ]見[ㄐㄧㄢˋ]，如[ㄖㄨˊ]隔[ㄍㄜˊ]三[ㄙㄢ]秋[ㄑㄧㄡ]。這[ㄓㄜˋ]句[ㄐㄩˋ]話[ㄏㄨㄚˋ]使[ㄕˇ]用[ㄩㄥˋ]了[˙ㄌㄜ]哪[ㄋㄚˇ]些[ㄒㄧㄝ]修[ㄒㄧㄡ]辭[ˊ]的[˙ㄉㄜ]組[ㄗㄨˇ]合[ㄏㄜˊ]？",
+        tag: "誇飾與譬喻",
+        options: [
+          { text: "誇[ㄎㄨㄚ]飾[ㄕˋ]與[ㄩˇ]譬[ㄆㄧˋ]喻[ㄩˋ]", isCorrect: true },
+          { text: "對[ㄉㄨㄟˋ]偶[ㄡˇ]與[ㄩˇ]排[ㄆㄞˊ]比[ㄅㄧˇ]", isCorrect: false },
+          { text: "雙[ㄕㄨㄤ]關[ㄍㄨㄢ]與[ㄩˇ]頂[ㄉㄧㄥˇ]真[ㄓㄣ]", isCorrect: false },
+          { text: "倒[ㄉㄠˋ]裝[ㄓㄨㄤ]與[ㄩˇ]呼[ㄏㄨ]告[ㄍㄠˋ]", isCorrect: false }
+        ],
+        explanation: "帶[ㄉㄞˋ]有[ㄧㄡˇ]喻[ㄩˋ]詞[ˊ]「如[ㄖㄨˊ]」（譬[ㄆㄧˋ]喻[ㄩˋ]），同[ㄊㄨㄥˊ]時[ㄕˊ]將[ㄐㄧㄤ]短[ㄉㄨㄢˇ]暫[ㄗㄢˋ]的[˙ㄉㄜ]一[ㄧˋ]日[ㄖˋ]誇[ㄎㄨㄚ]張[ㄓㄨㄤ]成[ㄔㄥˊ]三[ㄙㄢ]年[ㄋㄧㄢˊ]（誇[ㄎㄨㄚ]飾[ㄕˋ]），為[ㄨㄟˊ]誇[ㄎㄨㄚ]飾[ㄕˋ]與[ㄩˇ]譬[ㄆㄧˋ]喻[ㄩˋ]的[˙ㄉㄜ]組[ㄗㄨˇ]合[ㄏㄜˊ]。"
+      }
+    ];
+
+    // State Variables
+    let activeQuestions = [];
+    let currentQuestionIndex = 0;
+    let userSelectedAnswers = []; // Index of selected option per question
+    let isZhuyinVisible = true;
+    let quizTimer = null;
+    let secondsElapsed = 0;
+    let quizHistory = [];
+
+    // Helper: Parse Raw Text with [注音] Markup to Right-side Zhuyin HTML
+    function formatZhuyinHTML(rawText) {
+      if (!rawText) return '';
+      
+      // Regex matches Chinese Character followed by bracketed Zhuyin: 國[ㄍㄨㄛˊ]
+      const regex = /([\u4e00-\u9fa5\u3400-\u4dbf])\[([ㄅ-ㄩˊˇˋ˙\s]+)\]/g;
+      
+      return rawText.replace(regex, (match, char, zhuyin) => {
+        return `<span class="zh-wrapper"><span class="zh-char">${char}</span><span class="zhuyin-text">${zhuyin.trim()}</span></span>`;
+      });
+    }
+
+    // Initialize App
+    window.addEventListener('DOMContentLoaded', () => {
+      loadHistoryFromStorage();
+      renderHistoryTable();
+      updateHeaderStats();
+    });
+
+    // Fisher-Yates Shuffle
+    function shuffleArray(array) {
+      const arr = JSON.parse(JSON.stringify(array));
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Toggle Zhuyin Visibility
+    function toggleZhuyin() {
+      isZhuyinVisible = !isZhuyinVisible;
+      const btn = document.getElementById('btn-toggle-zhuyin');
+      
+      if (isZhuyinVisible) {
+        document.body.classList.remove('hide-zhuyin');
+        btn.innerHTML = '<i class="fa-solid fa-font"></i><span>注音：顯示中</span>';
+      } else {
+        document.body.classList.add('hide-zhuyin');
+        btn.innerHTML = '<i class="fa-solid fa-font"></i><span>注音：已隱藏</span>';
+      }
+    }
+
+    // Start New Quiz
+    function startQuiz() {
+      // 1. Shuffle Questions
+      const shuffled = shuffleArray(rawQuestionsData);
+
+      // 2. Shuffle Options for each question
+      activeQuestions = shuffled.map(q => {
+        return {
+          ...q,
+          options: shuffleArray(q.options)
+        };
+      });
+
+      // 3. Reset States
+      currentQuestionIndex = 0;
+      userSelectedAnswers = new Array(activeQuestions.length).fill(null);
+      secondsElapsed = 0;
+
+      // 4. Start Timer
+      if (quizTimer) clearInterval(quizTimer);
+      quizTimer = setInterval(() => {
+        secondsElapsed++;
+        document.getElementById('timer-text').textContent = formatTime(secondsElapsed);
+      }, 1000);
+
+      // 5. Switch Screen & Render
+      showQuizScreen();
+      renderNavGrid();
+      renderCurrentQuestion();
+    }
+
+    function showWelcomeScreen() {
+      if (quizTimer) clearInterval(quizTimer);
+      document.getElementById('screen-welcome').classList.remove('hidden');
+      document.getElementById('screen-quiz').classList.add('hidden');
+      document.getElementById('screen-result').classList.add('hidden');
+      renderHistoryTable();
+      updateHeaderStats();
+    }
+
+    function showQuizScreen() {
+      document.getElementById('screen-welcome').classList.add('hidden');
+      document.getElementById('screen-quiz').classList.remove('hidden');
+      document.getElementById('screen-result').classList.add('hidden');
+    }
+
+    function showResultScreen() {
+      document.getElementById('screen-welcome').classList.add('hidden');
+      document.getElementById('screen-quiz').classList.add('hidden');
+      document.getElementById('screen-result').classList.remove('hidden');
+    }
+
+    // Render Fast Question Nav Grid
+    function renderNavGrid() {
+      const grid = document.getElementById('question-nav-grid');
+      grid.innerHTML = '';
+
+      activeQuestions.forEach((_, idx) => {
+        const btn = document.createElement('button');
+        btn.textContent = idx + 1;
+        btn.className = `h-7 text-xs font-bold rounded-md transition flex items-center justify-center border ${getNavBtnStyle(idx)}`;
+        btn.onclick = () => jumpToQuestion(idx);
+        grid.appendChild(btn);
+      });
+    }
+
+    function getNavBtnStyle(idx) {
+      const selected = userSelectedAnswers[idx];
+      if (idx === currentQuestionIndex) {
+        return 'bg-indigo-600 text-white border-indigo-600 ring-2 ring-indigo-200';
+      }
+      if (selected !== null) {
+        const isCorrect = activeQuestions[idx].options[selected].isCorrect;
+        return isCorrect 
+          ? 'bg-emerald-500 text-white border-emerald-500' 
+          : 'bg-rose-500 text-white border-rose-500';
+      }
+      return 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100';
+    }
+
+    function updateNavGridStyles() {
+      const btns = document.getElementById('question-nav-grid').children;
+      for (let i = 0; i < btns.length; i++) {
+        btns[i].className = `h-7 text-xs font-bold rounded-md transition flex items-center justify-center border ${getNavBtnStyle(i)}`;
+      }
+    }
+
+    // Render Question & Handle Immediate Feedback
+    function renderCurrentQuestion() {
+      const q = activeQuestions[currentQuestionIndex];
+      const selectedOptIdx = userSelectedAnswers[currentQuestionIndex];
+      const isAnswered = selectedOptIdx !== null;
+
+      // Update Progress
+      document.getElementById('current-q-num').textContent = currentQuestionIndex + 1;
+      const progressPercent = ((currentQuestionIndex + 1) / activeQuestions.length) * 100;
+      document.getElementById('quiz-progress-fill').style.width = `${progressPercent}%`;
+
+      // Calculate Current Correct Count
+      let liveCorrect = 0;
+      userSelectedAnswers.forEach((ansIdx, qIdx) => {
+        if (ansIdx !== null && activeQuestions[qIdx].options[ansIdx].isCorrect) {
+          liveCorrect++;
+        }
+      });
+      document.getElementById('live-correct-count').textContent = liveCorrect;
+
+      // Question Tag & Text
+      document.getElementById('question-tag').textContent = q.tag;
+      document.getElementById('question-text').innerHTML = `${currentQuestionIndex + 1}. ${formatZhuyinHTML(q.question)}`;
+
+      // Render Option Buttons
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+
+      const labels = ['A', 'B', 'C', 'D'];
+
+      q.options.forEach((opt, optIdx) => {
+        const btn = document.createElement('button');
+        
+        let btnStyle = 'border-slate-200 hover:border-slate-300 bg-white text-slate-700 hover:bg-slate-50';
+        let badgeStyle = 'bg-slate-100 text-slate-500';
+        let statusIcon = '';
+
+        if (isAnswered) {
+          btn.disabled = true; // Lock options after clicking
+          btnStyle += ' cursor-default';
+
+          if (opt.isCorrect) {
+            btnStyle = 'border-emerald-500 bg-emerald-50 text-emerald-900 font-bold ring-1 ring-emerald-400';
+            badgeStyle = 'bg-emerald-600 text-white';
+            statusIcon = '<i class="fa-solid fa-circle-check text-emerald-600 text-lg ml-auto"></i>';
+          } else if (optIdx === selectedOptIdx && !opt.isCorrect) {
+            btnStyle = 'border-rose-400 bg-rose-50 text-rose-900 font-bold ring-1 ring-rose-300';
+            badgeStyle = 'bg-rose-600 text-white';
+            statusIcon = '<i class="fa-solid fa-circle-xmark text-rose-600 text-lg ml-auto"></i>';
+          } else {
+            btnStyle = 'border-slate-100 bg-slate-50 text-slate-400 opacity-60';
+          }
+        }
+
+        btn.className = `w-full text-left p-4 rounded-2xl border-2 transition duration-150 flex items-center gap-3.5 ${btnStyle}`;
+        btn.onclick = () => handleOptionSelect(optIdx);
+
+        btn.innerHTML = `
+          <span class="w-7 h-7 rounded-xl flex items-center justify-center text-xs font-black shrink-0 ${badgeStyle}">
+            ${labels[optIdx]}
+          </span>
+          <span class="text-sm sm:text-base leading-relaxed flex-1">${formatZhuyinHTML(opt.text)}</span>
+          ${statusIcon}
+        `;
+
+        optionsContainer.appendChild(btn);
+      });
+
+      // Immediate Explanation Box Control
+      const explainBox = document.getElementById('immediate-explanation-box');
+      const nextBtn = document.getElementById('btn-next');
+
+      if (isAnswered) {
+        const isUserCorrect = q.options[selectedOptIdx].isCorrect;
+        const badge = document.getElementById('explain-result-badge');
+
+        if (isUserCorrect) {
+          explainBox.className = 'transition-all duration-300 rounded-2xl p-4 sm:p-5 border-2 border-emerald-300 bg-emerald-50/70 space-y-2';
+          badge.className = 'font-black text-xs sm:text-sm px-3 py-1 rounded-lg bg-emerald-600 text-white flex items-center gap-1.5';
+          badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> 回答正確！';
+        } else {
+          explainBox.className = 'transition-all duration-300 rounded-2xl p-4 sm:p-5 border-2 border-rose-300 bg-rose-50/70 space-y-2';
+          badge.className = 'font-black text-xs sm:text-sm px-3 py-1 rounded-lg bg-rose-600 text-white flex items-center gap-1.5';
+          badge.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> 回答錯誤！';
+        }
+
+        document.getElementById('explain-content').innerHTML = formatZhuyinHTML(q.explanation);
+        explainBox.classList.remove('hidden');
+
+        // Show Next Button
+        nextBtn.classList.remove('hidden');
+        if (currentQuestionIndex === activeQuestions.length - 1) {
+          nextBtn.innerHTML = '<span>檢視總成績</span> <i class="fa-solid fa-trophy"></i>';
+        } else {
+          nextBtn.innerHTML = '<span>下一題</span> <i class="fa-solid fa-arrow-right"></i>';
+        }
+
+      } else {
+        explainBox.classList.add('hidden');
+        nextBtn.classList.add('hidden');
+      }
+
+      updateNavGridStyles();
+    }
+
+    // Handle Option Selection (Triggers Instant Feedback)
+    function handleOptionSelect(optIdx) {
+      if (userSelectedAnswers[currentQuestionIndex] !== null) return; // Prevent re-click
+      userSelectedAnswers[currentQuestionIndex] = optIdx;
+      renderCurrentQuestion();
+    }
+
+    function nextQuestion() {
+      if (currentQuestionIndex < activeQuestions.length - 1) {
+        currentQuestionIndex++;
+        renderCurrentQuestion();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        submitQuiz();
+      }
+    }
+
+    function jumpToQuestion(idx) {
+      currentQuestionIndex = idx;
+      renderCurrentQuestion();
+    }
+
+    // Submit Quiz & Show Final Result Page
+    function submitQuiz() {
+      if (quizTimer) clearInterval(quizTimer);
+
+      let correctCount = 0;
+      activeQuestions.forEach((q, idx) => {
+        const selected = userSelectedAnswers[idx];
+        if (selected !== null && q.options[selected].isCorrect) {
+          correctCount++;
+        }
+      });
+
+      const total = activeQuestions.length;
+      const isPerfect = (correctCount === total);
+      const accuracy = Math.round((correctCount / total) * 100);
+
+      const record = {
+        id: Date.now(),
+        timestamp: new Date().toLocaleString('zh-TW', { hour12: false }),
+        score: correctCount,
+        total: total,
+        accuracy: accuracy,
+        timeSpent: secondsElapsed,
+        isPerfect: isPerfect
+      };
+
+      quizHistory.unshift(record);
+      saveHistoryToStorage();
+
+      renderResultPage(record);
+      showResultScreen();
+    }
+
+    function renderResultPage(record) {
+      const isPerfect = record.isPerfect;
+
+      const badgeIcon = document.getElementById('result-badge-icon');
+      const statusTitle = document.getElementById('result-status-title');
+      const statusDesc = document.getElementById('result-status-desc');
+      const certBtn = document.getElementById('btn-unlock-certificate');
+
+      if (isPerfect) {
+        badgeIcon.className = 'w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl bg-emerald-100 text-emerald-600 shadow-emerald-200 shadow-lg';
+        badgeIcon.innerHTML = '<i class="fa-solid fa-trophy"></i>';
+
+        statusTitle.textContent = '🎉 恭喜過關！滿分成就解鎖！';
+        statusTitle.className = 'text-2xl sm:text-3xl font-black text-emerald-600';
+
+        statusDesc.textContent = '太強了！您成功獲得 20 / 20 題全對滿分成績！請點擊下方按鈕生成「老師檢查通關簽章卡」給老師核對。';
+        certBtn.classList.remove('hidden');
+
+        // Confetti Burst
+        confetti({
+          particleCount: 120,
+          spread: 80,
+          origin: { y: 0.6 }
+        });
+
+      } else {
+        badgeIcon.className = 'w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl bg-amber-100 text-amber-600 shadow-amber-200 shadow-lg';
+        badgeIcon.innerHTML = '<i class="fa-solid fa-lightbulb"></i>';
+
+        statusTitle.textContent = '💪 還差一點點！繼續加油！';
+        statusTitle.className = 'text-2xl sm:text-3xl font-black text-slate-800';
+
+        statusDesc.textContent = `您獲得了 ${record.score} 分！根據測驗規則，必須達到 20 / 20 全對滿分才能解鎖「老師檢查通關簽章卡」。`;
+        certBtn.classList.add('hidden');
+      }
+
+      document.getElementById('res-score-text').textContent = `${record.score} / ${record.total}`;
+      document.getElementById('res-accuracy-text').textContent = `${record.accuracy}%`;
+      document.getElementById('res-time-text').textContent = formatTime(record.timeSpent);
+
+      renderReviewList();
+    }
+
+    // Render Review List on Result Screen
+    function renderReviewList() {
+      const container = document.getElementById('review-list');
+      container.innerHTML = '';
+
+      activeQuestions.forEach((q, idx) => {
+        const userChoiceIdx = userSelectedAnswers[idx];
+        const isUserCorrect = userChoiceIdx !== null && q.options[userChoiceIdx].isCorrect;
+        const correctOpt = q.options.find(o => o.isCorrect);
+        const userOptText = userChoiceIdx !== null ? q.options[userChoiceIdx].text : '（未作答）';
+
+        const item = document.createElement('div');
+        item.className = `p-4 sm:p-5 rounded-2xl border-2 space-y-3 ${
+          isUserCorrect ? 'border-emerald-200 bg-emerald-50/30' : 'border-rose-200 bg-rose-50/30'
+        }`;
+
+        item.innerHTML = `
+          <div class="flex justify-between items-start gap-3">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black ${
+                isUserCorrect ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'
+              }">
+                ${idx + 1}
+              </span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600">
+                ${q.tag}
+              </span>
+            </div>
+            <span class="font-bold text-xs ${isUserCorrect ? 'text-emerald-700' : 'text-rose-700'} flex items-center gap-1">
+              ${isUserCorrect ? '<i class="fa-solid fa-check"></i> 答對' : '<i class="fa-solid fa-xmark"></i> 答錯'}
+            </span>
+          </div>
+
+          <h4 class="font-bold text-slate-800 text-sm leading-relaxed">${formatZhuyinHTML(q.question)}</h4>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            <div class="p-2.5 rounded-xl ${isUserCorrect ? 'bg-emerald-100/60 text-emerald-900' : 'bg-rose-100/60 text-rose-900'}">
+              <span class="block opacity-75 mb-0.5">您的選擇：</span>
+              <span class="font-bold">${formatZhuyinHTML(userOptText)}</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-emerald-100/60 text-emerald-900">
+              <span class="block text-emerald-700 mb-0.5">正確答案：</span>
+              <span class="font-bold">${formatZhuyinHTML(correctOpt.text)}</span>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-white border border-slate-200 text-xs space-y-1">
+            <span class="font-bold text-indigo-700 flex items-center gap-1">
+              <i class="fa-solid fa-book-bookmark"></i> 修辭觀念解析：
+            </span>
+            <p class="text-slate-600 leading-relaxed">${formatZhuyinHTML(q.explanation)}</p>
+          </div>
+        `;
+
+        container.appendChild(item);
+      });
+    }
+
+    // Teacher Certificate Modal
+    function openTeacherCertificate() {
+      const modal = document.getElementById('modal-certificate');
+      modal.classList.remove('hidden');
+
+      document.getElementById('cert-attempt-count').textContent = quizHistory.length;
+      document.getElementById('cert-date-text').textContent = new Date().toLocaleDateString('zh-TW');
+      document.getElementById('cert-time-text').textContent = formatTime(secondsElapsed);
+    }
+
+    function closeTeacherCertificate() {
+      document.getElementById('modal-certificate').classList.add('hidden');
+    }
+
+    // LocalStorage Logic
+    function saveHistoryToStorage() {
+      try {
+        localStorage.setItem('rhetoric_quiz_v2_history', JSON.stringify(quizHistory));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function loadHistoryFromStorage() {
+      try {
+        const saved = localStorage.getItem('rhetoric_quiz_v2_history');
+        if (saved) quizHistory = JSON.parse(saved);
+      } catch (e) {
+        quizHistory = [];
+      }
+    }
+
+    function clearHistory() {
+      if (confirm('確定要刪除所有的歷次練習紀錄嗎？')) {
+        quizHistory = [];
+        saveHistoryToStorage();
+        renderHistoryTable();
+        updateHeaderStats();
+      }
+    }
+
+    function updateHeaderStats() {
+      let best = 0;
+      quizHistory.forEach(h => {
+        if (h.score > best) best = h.score;
+      });
+      document.getElementById('stat-best-score').textContent = `${best} / 20`;
+    }
+
+    function renderHistoryTable() {
+      const tbody = document.getElementById('history-table-body');
+      tbody.innerHTML = '';
+
+      if (quizHistory.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center py-5 text-slate-400 text-xs">
+              目前尚無測驗紀錄，點擊上方「開始 20 題隨機測驗」挑戰吧！
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      quizHistory.forEach((h, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50 transition';
+
+        const attemptNum = quizHistory.length - idx;
+
+        tr.innerHTML = `
+          <td class="py-2.5 px-3 font-bold text-slate-700">第 ${attemptNum} 次</td>
+          <td class="py-2.5 px-3 text-slate-500 text-xs">${h.timestamp}</td>
+          <td class="py-2.5 px-3 font-bold ${h.isPerfect ? 'text-emerald-600' : 'text-slate-800'}">${h.score} / ${h.total}</td>
+          <td class="py-2.5 px-3 font-mono text-slate-600">${h.accuracy}%</td>
+          <td class="py-2.5 px-3">
+            <span class="inline-block px-2 py-0.5 rounded text-xs font-bold ${
+              h.isPerfect ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'
+            }">
+              ${h.isPerfect ? '🎉 全對過關' : '未過關'}
+            </span>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function formatTime(totalSecs) {
+      const mins = Math.floor(totalSecs / 60);
+      const secs = totalSecs % 60;
+      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+  </script>
+</body>
+</html>
