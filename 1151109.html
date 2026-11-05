@@ -146,7 +146,25 @@ button.cell:disabled{cursor:default;color:var(--ink);opacity:1}
 .empty p{margin:0}
 footer{color:var(--muted);font-size:13px}
 
+.nav{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.mbar{height:6px;margin-top:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.mbar i{display:block;height:100%;background:var(--ok)}
+.mbar i.full{background:var(--gold)}
+.row.split{justify-content:space-between}
+.tlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.tlist li{display:grid;grid-template-columns:2.2em minmax(0,1fr) auto;gap:4px 12px;align-items:start;padding:12px 0;border-top:1px solid var(--line)}
+.tlist li>*{min-width:0}
+.tlist .no{padding-top:6px;color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
+.tlist .s{margin:0;font-family:var(--serif);font-size:22px;line-height:1.7}
+.tlist .n{margin:2px 0 0;color:var(--muted);font-size:15px}
+.tlist .btn{min-height:40px;padding:0 14px;font-size:14px}
+.slide .grid{--cell:clamp(44px,9vw,88px)}
+.slide .note{font-size:20px}
+.slide .chg{font-size:32px}
+.slide .prompt{font-size:22px}
 @media (max-width:460px){
+  .tlist li{grid-template-columns:2.2em minmax(0,1fr)}
+  .tlist li>.btn{grid-column:2;justify-self:start}
   .opts{grid-template-columns:repeat(2,minmax(0,1fr))}
   .sheet{padding:16px}
   h1{font-size:24px}
@@ -207,9 +225,117 @@ var Q=[
 {l:3,s:"這位作家嘔心{歷}血，才寫成這部小說。",c:"瀝",d:"曆厲",n:"「嘔心瀝血」是費盡心血。「瀝」是三點水，指液體一滴一滴落下。"},
 {l:3,s:"大家眾志成{誠}，終於完成了這項困難的任務。",c:"城",d:"成呈",n:"「眾志成城」是大家同心協力，力量就像城牆一樣堅固。"},
 {l:3,s:"上課時要全神{灌}注，才聽得懂老師的講解。",c:"貫",d:"慣冠",n:"「全神貫注」是精神完全集中。「貫」是貫穿、集中。"},
-{l:3,s:"他做事{競}競業業，從來不敢偷懶。",c:"兢",d:"鏡境",n:"「兢兢業業」是小心謹慎、認真負責。「兢兢」表示小心謹慎的樣子。"},
+{l:3,s:"他做事{競}兢業業，從來不敢偷懶。",c:"兢",d:"鏡境",n:"「兢兢業業」是小心謹慎、認真負責。「兢兢」表示小心謹慎的樣子。"},
 {l:3,s:"不要因為一次失敗，就自暴自{氣}。",c:"棄",d:"器棋",n:"「自暴自棄」是自己不求上進，放棄自己。「棄」是丟掉、放棄。"},
-{l:3,s:"這裡山明水秀，簡直像世外桃{原}一樣。",c:"源",d:"園圓",n:"「世外桃源」是與世隔絕的美好地方，出自〈桃花源記〉。「源」是三點水。"}
+{l:3,s:"這裡山明水秀，簡直像世外桃{原}一樣。",c:"源",d:"園圓",n:"「世外桃源」是與世隔絕的美好地方，出自〈桃花源記〉。「源」是三點水。"},
+/* 初階（續） */
+{l:1,s:"我{再}教室裡看書。",c:"在",d:"載哉",n:"「在」表示地點或正在做的事；「再」表示重複、又一次。"},
+{l:1,s:"媽媽煮{得}菜很好吃。",c:"的",d:"地底",n:"「的」用在名詞前面，說明是什麼樣的東西（媽媽煮的菜）；「得」用在動詞後面。"},
+{l:1,s:"放學後我走{道}家就先洗手。",c:"到",d:"倒盜",n:"「走到」表示到達某個地方；「道」是道路、道理。"},
+{l:1,s:"請問{那}裡有廁所？",c:"哪",d:"拿娜",n:"問地點要用「哪」（哪裡）；「那」是指遠處的（那裡）。"},
+{l:1,s:"請你自{已}整理書包。",c:"己",d:"以巳",n:"「自己」是指自己本人，用「己」；「已」用在「已經」。"},
+{l:1,s:"這個週{未}我們全家去爬山。",c:"末",d:"木本",n:"「週末」是一週的最後，「末」是最後的意思；「未」是還沒有。"},
+{l:1,s:"今{夫}的天氣很晴朗。",c:"天",d:"大太",n:"「今天」的「天」，是「一」和「大」合起來；「夫」是丈夫。"},
+{l:1,s:"這隻警{大}很聰明，能找到壞人。",c:"犬",d:"太天",n:"「警犬」是幫助警察的狗，「犬」比「大」多一點。"},
+{l:1,s:"小朋友在{士}地上玩沙。",c:"土",d:"工王",n:"「土」上面短、下面長；「士」上面長、下面短。"},
+{l:1,s:"我的{日}標是每天讀一本書。",c:"目",d:"自白",n:"「目標」是想要達到的目的，「目」像一隻眼睛。"},
+{l:1,s:"這次考試我得了一{白}分。",c:"百",d:"自日",n:"「百」是數字，一百分；「白」是顏色。"},
+{l:1,s:"我用{又}子吃麵。",c:"叉",d:"文反",n:"「叉子」是用來叉東西的，「叉」比「又」多了一點。"},
+{l:1,s:"請從左邊的門進{人}。",c:"入",d:"八大",n:"「進入」是往裡面去，要寫「入」；「人」是人類。"},
+{l:1,s:"車子在紅燈前停{正}。",c:"止",d:"上整",n:"「停止」是不再前進，「止」是停下來的意思。"},
+{l:1,s:"他大聲向老師{球}救。",c:"求",d:"救秋",n:"「求救」是請別人幫忙，「求」是請求；「球」是皮球。"},
+{l:1,s:"今天天氣{狠}好。",c:"很",d:"恨痕",n:"「很」表示程度，是雙人旁；「狠」是兇狠，是犬字旁。"},
+{l:1,s:"我已經寫{玩}功課了。",c:"完",d:"元園",n:"「寫完」是做好了、結束了；「玩」是遊戲。"},
+{l:1,s:"弟弟在公園{完}得很開心。",c:"玩",d:"頑元",n:"「玩」是遊戲，王字旁；「完」是結束。"},
+{l:1,s:"月亮又大又{園}。",c:"圓",d:"原源",n:"「圓」是圓形；「園」是公園、花園。"},
+{l:1,s:"他{長}常幫助別人。",c:"常",d:"場嘗",n:"「常常」是經常；「長」是長短、成長。"},
+{l:1,s:"小樹苗慢慢{常}大了。",c:"長",d:"場嘗",n:"「長大」是成長，讀ㄓㄤˇ；「常」是常常。"},
+{l:1,s:"他是我最好的玩{半}。",c:"伴",d:"拌絆",n:"「玩伴」是一起玩的人，人字旁；「半」是一半。"},
+{l:1,s:"我們一起去吃午{反}。",c:"飯",d:"返板",n:"「午飯」是吃的食物，所以是食字旁的「飯」。"},
+{l:1,s:"我很{相}念外婆。",c:"想",d:"像向",n:"「想念」是心裡思念，「想」下面有「心」。"},
+{l:1,s:"這條路一{真}向前走就到了。",c:"直",d:"值植",n:"「一直」是不轉彎地向前；「直」是不彎曲。"},
+{l:1,s:"今天的天氣很{睛}朗。",c:"晴",d:"請情",n:"「晴朗」跟天氣有關，所以是日字旁；「睛」是眼睛。"},
+{l:1,s:"他的眼{晴}又大又亮。",c:"睛",d:"請情",n:"「眼睛」跟眼睛有關，所以是目字旁。"},
+{l:1,s:"小明把桌子擦得很{請}潔。",c:"清",d:"晴情",n:"「清潔」是乾淨，三點水；「請」是言字旁。"},
+{l:1,s:"老師{情}大家安靜。",c:"請",d:"清晴",n:"「請」是言字旁，用話語拜託別人。"},
+{l:1,s:"樹上有一隻小{烏}在唱歌。",c:"鳥",d:"鳴鴨",n:"「鳥」中間有一橫，是牠的眼睛；「烏」沒有這一橫。"},
+{l:1,s:"爸爸開{氣}車載我們出門。",c:"汽",d:"器棄",n:"「汽車」用油或電行駛，是三點水的「汽」；「氣」是空氣。"},
+{l:1,s:"今天的天{汽}很好。",c:"氣",d:"器棄",n:"「天氣」是空氣的狀況；「汽」是水蒸氣。"},
+{l:1,s:"天黑了，請把{登}打開。",c:"燈",d:"等鄧",n:"「燈」會發光，所以是火字旁。"},
+{l:1,s:"請在這裡寫上你的姓{明}。",c:"名",d:"命鳴",n:"「姓名」是姓和名字；「明」是明亮。"},
+{l:1,s:"今天我{旱}起去運動。",c:"早",d:"草日",n:"「早」是太陽升起、天剛亮的時候；「旱」是很久不下雨。"},
+/* 中階（續） */
+{l:2,s:"他{漸}愧地低下了頭。",c:"慚",d:"斬暫",n:"「慚愧」是心裡覺得羞愧，所以是豎心旁的「慚」。"},
+{l:2,s:"他不想吃，你不要{免}強他。",c:"勉",d:"冕晚",n:"「勉強」是強迫或盡力，「勉」下面有「力」。"},
+{l:2,s:"{敢}謝你在我生病時照顧我。",c:"感",d:"憾撼",n:"「感謝」是心裡感激，「感」下面有「心」。"},
+{l:2,s:"同學們排隊排得很{正}齊。",c:"整",d:"政證",n:"「整齊」是有條理、不凌亂；「正」是端正。"},
+{l:2,s:"他對畫畫很有{幸}趣。",c:"興",d:"杏倖",n:"「興趣」是喜愛的心情，「興」有高興、興起的意思；「幸」是幸運。"},
+{l:2,s:"{邦}助別人是一件快樂的事。",c:"幫",d:"綁榜",n:"「幫助」是協助別人，「幫」下面是「巾」；「邦」是國家。"},
+{l:2,s:"同學們在{燥}場上跑步。",c:"操",d:"澡躁",n:"「操場」是做運動的地方，提手旁；「燥」是火字旁，如乾燥。"},
+{l:2,s:"他每天晚上都要洗{躁}。",c:"澡",d:"燥操",n:"「洗澡」跟水有關，所以是三點水的「澡」。"},
+{l:2,s:"他們一家人過著{辛}福的生活。",c:"幸",d:"杏倖",n:"「幸福」是快樂美滿；「辛」是辛苦。"},
+{l:2,s:"他為社會{供}獻了許多力量。",c:"貢",d:"項攻",n:"「貢獻」是付出力量或財物，「貢」下面有「貝」，和財物有關；「供」是供應。"},
+{l:2,s:"不可以{波}壞學校的公物。",c:"破",d:"玻坡",n:"「破壞」是損壞，「破」是石字旁。"},
+{l:2,s:"寒假我們全家去日本{族}遊。",c:"旅",d:"旋施",n:"「旅遊」是出外遊玩，「旅」是方字旁；「族」是民族、家族。"},
+{l:2,s:"他{慘}加了作文比賽。",c:"參",d:"餐蠶",n:"「參加」是加入活動；「慘」是悲慘，豎心旁。"},
+{l:2,s:"春天的陽光很{瘟}暖。",c:"溫",d:"盟紋",n:"「溫暖」是不冷不熱，三點水；「瘟」是瘟疫。"},
+{l:2,s:"他每天{青}晨都去公園跑步。",c:"清",d:"晴請",n:"「清晨」是天剛亮的時候；「青」是顏色。"},
+{l:2,s:"這件事我已經{卻}定了。",c:"確",d:"雀礁",n:"「確定」是肯定，「確」是石字旁；「卻」是轉折的意思。"},
+{l:2,s:"上學要{尊}守校規。",c:"遵",d:"導道",n:"「遵守」是依照規定去做，「遵」是走之旁；「尊」是尊敬。"},
+{l:2,s:"我們要{遵}敬老師。",c:"尊",d:"導寸",n:"「尊敬」是敬重，「尊」下面是「寸」；「遵」是遵守。"},
+{l:2,s:"這場表演真{清}彩。",c:"精",d:"睛晴",n:"「精彩」是出色、好看，「精」是米字旁；「清」是三點水。"},
+{l:2,s:"他代表學校參加{境}賽。",c:"競",d:"鏡敬",n:"「競賽」是互相比賽，「競」是互相爭勝；「境」是環境。"},
+{l:2,s:"我們要保護{還}境。",c:"環",d:"寰壞",n:"「環境」是周圍的情況，「環」是玉字旁；「還」是還有。"},
+{l:2,s:"他蹲在地上{關}察螞蟻。",c:"觀",d:"歡灌",n:"「觀察」是仔細看，「觀」右邊是「見」；「關」是關門。"},
+{l:2,s:"{觀}迎來到我們學校。",c:"歡",d:"權灌",n:"「歡迎」是高興地迎接，「歡」右邊是「欠」；「觀」是觀看。"},
+{l:2,s:"同學們正在{計}論這個問題。",c:"討",d:"訂訊",n:"「討論」是大家一起說出意見，「討」是言字旁；「計」是計算。"},
+{l:2,s:"請大家保持安{淨}。",c:"靜",d:"爭睜",n:"「安靜」是沒有聲音，「靜」是青字旁加「爭」；「淨」是乾淨。"},
+{l:2,s:"電影裡的{站}爭場面很可怕。",c:"戰",d:"佔詹",n:"「戰爭」是互相打仗，「戰」是戈字旁；「站」是站立。"},
+{l:2,s:"每個人都要負{則}任。",c:"責",d:"債賊",n:"「責任」是應該負的事，「責」下面有「貝」；「則」是規則。"},
+{l:2,s:"比賽要遵守{歸}則。",c:"規",d:"視觀",n:"「規則」是大家要遵守的辦法，「規」是見字旁；「歸」是回來。"},
+{l:2,s:"這件衣服很{商}合你。",c:"適",d:"滴敵",n:"「適合」是剛好配得上，「適」是走之旁；「商」是商店。"},
+{l:2,s:"他的{紀}憶力很好。",c:"記",d:"計己",n:"「記憶」是把事情記在心裡，言字旁；「紀」是絞絲旁，如紀念。"},
+{l:2,s:"我們拍照來{記}念這一天。",c:"紀",d:"計己",n:"「紀念」是用事物留下回憶，絞絲旁；「記」是言字旁，如記得。"},
+{l:2,s:"他做事非常{緊}慎。",c:"謹",d:"僅勤",n:"「謹慎」是小心，「謹」是言字旁；「緊」是緊張。"},
+{l:2,s:"爸爸{題}醒我帶雨傘。",c:"提",d:"堤是",n:"「提醒」是從旁叫人注意，提手旁；「題」是題目。"},
+{l:2,s:"他說話很有{理}貌。",c:"禮",d:"裡里",n:"「禮貌」是對人有禮，「禮」是示字旁；「理」是道理。"},
+{l:2,s:"我很{美}慕他的好成績。",c:"羨",d:"善義",n:"「羨慕」是心裡喜歡別人的好處，「羨」上面是「羊」。"},
+/* 高階（續） */
+{l:3,s:"祝你一{凡}風順。",c:"帆",d:"颱梵",n:"「一帆風順」比喻事情進行順利，「帆」是船上的布帆，巾字旁。"},
+{l:3,s:"他吃得{進}津有味。",c:"津",d:"盡浸",n:"「津津有味」是形容興趣濃厚，「津」本來是口水的意思。"},
+{l:3,s:"上車時大家{掙}先恐後地擠。",c:"爭",d:"崢諍",n:"「爭先恐後」是搶著向前，唯恐落後。「爭」是競爭。"},
+{l:3,s:"做事要持之以{衡}。",c:"恆",d:"橫權",n:"「持之以恆」是長久堅持不放棄，「恆」是豎心旁。"},
+{l:3,s:"他{墨}默無聞地做了很多好事。",c:"默",d:"嘿黯",n:"「默默無聞」是不出聲、不被人知道，「默」是黑字旁。"},
+{l:3,s:"考試前不可以{調}以輕心。",c:"掉",d:"吊釣",n:"「掉以輕心」是不把事情當一回事，「掉」是提手旁。"},
+{l:3,s:"用對方法，才能事半{工}倍。",c:"功",d:"攻貢",n:"「事半功倍」是用力少、成效大，「功」是成效。"},
+{l:3,s:"他面對困難，不屈不{饒}。",c:"撓",d:"僥澆",n:"「不屈不撓」是不低頭、不退縮，「撓」是提手旁。"},
+{l:3,s:"湖邊的風景讓人心{礦}神怡。",c:"曠",d:"壙擴",n:"「心曠神怡」是心情開闊愉快，「曠」是日字旁，指空闊。"},
+{l:3,s:"兩隊實力相當，勢均力{適}。",c:"敵",d:"滴嫡",n:"「勢均力敵」是雙方力量差不多，「敵」是對手。"},
+{l:3,s:"他聚精{匯}神地看書。",c:"會",d:"惠繪",n:"「聚精會神」是精神集中，「會」是聚集。"},
+{l:3,s:"多加這一筆，簡直是畫蛇添{促}。",c:"足",d:"捉疋",n:"「畫蛇添足」是做了多餘的事，「足」是腳。"},
+{l:3,s:"只等好運自己來，就像守{珠}待兔。",c:"株",d:"朱殊",n:"「守株待兔」比喻不努力卻想得到好處，「株」是樹木，木字旁。"},
+{l:3,s:"{王}羊補牢，還來得及。",c:"亡",d:"忘盲",n:"「亡羊補牢」是出了問題再想辦法補救，「亡」是丟失。"},
+{l:3,s:"他仗著老師撐腰，狐{架}虎威。",c:"假",d:"駕嫁",n:"「狐假虎威」是借別人的權勢嚇人，「假」是借。"},
+{l:3,s:"他說的話前後衝突，自相{茅}盾。",c:"矛",d:"予牟",n:"「自相矛盾」是前後說法衝突，「矛」是古代的兵器。"},
+{l:3,s:"他以為這樣就沒人知道，簡直是{淹}耳盜鈴。",c:"掩",d:"奄俺",n:"「掩耳盜鈴」是自己欺騙自己，「掩」是遮住，提手旁。"},
+{l:3,s:"做事不知變通，就像{克}舟求劍。",c:"刻",d:"剋核",n:"「刻舟求劍」是不知變通，「刻」是雕刻，刀字旁。"},
+{l:3,s:"他早就胸有成{足}，所以一點也不緊張。",c:"竹",d:"逐築",n:"「胸有成竹」是事前已經有把握，「竹」是竹子。"},
+{l:3,s:"大家採了許多水果，滿{再}而歸。",c:"載",d:"栽哉",n:"「滿載而歸」是收穫很多，「載」是裝載。"},
+{l:3,s:"跑完馬拉松，他精疲力{進}。",c:"盡",d:"僅燼",n:"「精疲力盡」是體力完全用完，「盡」是完了。"},
+{l:3,s:"他{會}聲繪影地描述那件事。",c:"繪",d:"惠燴",n:"「繪聲繪影」是形容描述生動逼真，「繪」是絞絲旁。"},
+{l:3,s:"學習要{尋}序漸進。",c:"循",d:"巡洵",n:"「循序漸進」是按照順序一步一步前進，「循」是依照。"},
+{l:3,s:"他讀書讀到{費}寢忘食。",c:"廢",d:"沸肺",n:"「廢寢忘食」是專心到忘了睡覺吃飯，「廢」是放棄、停止。"},
+{l:3,s:"{熱}能生巧，多練習就會進步。",c:"熟",d:"孰塾",n:"「熟能生巧」是練習多了就更靈巧，「熟」是熟練。"},
+{l:3,s:"他專心{至}志地讀書。",c:"致",d:"知緻",n:"「專心致志」是專一用心，「致」是盡力。"},
+{l:3,s:"他{必}恭畢敬地向老師鞠躬。",c:"畢",d:"斃蔽",n:"「畢恭畢敬」是非常恭敬，「畢」是完全。"},
+{l:3,s:"考完試，他如釋重{副}。",c:"負",d:"富複",n:"「如釋重負」是像放下重擔一樣輕鬆，「負」是背負。"},
+{l:3,s:"這件事真是不可思{意}。",c:"議",d:"義儀",n:"「不可思議」是無法想像，「議」是言字旁。"},
+{l:3,s:"他的成績總是名列前{矛}。",c:"茅",d:"芽牟",n:"「名列前茅」是名次排在前面，「茅」是草字頭。"},
+{l:3,s:"他循規{滔}矩，從不惹麻煩。",c:"蹈",d:"稻掏",n:"「循規蹈矩」是遵守規矩，「蹈」是足字旁，指踩踏。"},
+{l:3,s:"他小心{異}翼地捧著杯子。",c:"翼",d:"冀奕",n:"「小心翼翼」是非常謹慎，「翼」是翅膀。"},
+{l:3,s:"客人太多，老闆忙得應接不{瑕}。",c:"暇",d:"霞遐",n:"「應接不暇」是事情太多來不及應付，「暇」是空閒，日字旁。"},
+{l:3,s:"這份禮物真是{緊}上添花。",c:"錦",d:"謹僅",n:"「錦上添花」是好上加好，「錦」是金字旁，指華麗的絲織品。"},
+{l:3,s:"老師語重心{常}地勸我們。",c:"長",d:"場嘗",n:"「語重心長」是話誠懇、情意深厚，「長」是深長。"}
 ];
 var PUNCT=/[\p{P}\s]/u;
 Q.forEach(function(q,i){
@@ -238,12 +364,25 @@ function recordBest(){
 }
 function getMissed(){try{return new Set(JSON.parse(store.get("gc-missed")||"[]"));}catch(e){return new Set();}}
 function saveMissed(s){store.set("gc-missed",JSON.stringify(Array.from(s)));}
+function getMastered(){try{return new Set(JSON.parse(store.get("gc-mastered")||"[]"));}catch(e){return new Set();}}
+function saveMastered(s){store.set("gc-mastered",JSON.stringify(Array.from(s)));}
+/* 抽題：錯題優先（最多 6 題），其次沒做過的，最後才是已精熟的 */
+function pickRound(list,onlyMissed){
+  if(onlyMissed){return shuffle(list).slice(0,ROUND);}
+  var m=getMissed(),ms=getMastered();
+  var missed=shuffle(list.filter(function(q){return m.has(q.id);}));
+  var fresh=shuffle(list.filter(function(q){return !m.has(q.id)&&!ms.has(q.id);}));
+  var done=shuffle(list.filter(function(q){return ms.has(q.id)&&!m.has(q.id);}));
+  var out=missed.slice(0,6).concat(fresh).concat(missed.slice(6)).concat(done);
+  return shuffle(out.slice(0,ROUND));
+}
 
 function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
 
 var S={
   level:(function(){var v=store.get("gc-level");return v==="m"?"m":(["1","2","3"].indexOf(v)>=0?Number(v):1);})(),
   mode:store.get("gc-mode")==="type"?"type":"choice",
+  view:"practice",tl:1,tmode:"list",thide:true,tidx:0,trev:{},srev:false,confirmReset:false,
   queue:[],i:0,results:[],done:false,
   step:"find",errs:0,solved:false,revealed:false,hint:false,msg:"",shake:-1,opts:[],bad:{},focus:null
 };
@@ -258,7 +397,7 @@ function resetQ(){
   S.opts=q?shuffle([q.c,q.w].concat(Array.from(q.d))):[];
 }
 function startRound(){
-  S.queue=shuffle(pool()).slice(0,ROUND);
+  S.queue=pickRound(pool(),S.level==="m");
   S.i=0;S.results=[];S.done=false;
   resetQ();render();
 }
@@ -267,8 +406,9 @@ function finish(ok){
   var q=S.queue[S.i],m=getMissed();
   S.solved=true;S.step="fix";S.msg="";
   S.results.push({id:q.id,ok:ok});
-  if(ok){m.delete(q.id);}else{m.add(q.id);}
-  saveMissed(m);
+  var ms=getMastered();
+  if(ok){m.delete(q.id);ms.add(q.id);}else{m.add(q.id);ms.delete(q.id);}
+  saveMissed(m);saveMastered(ms);
   S.focus="[data-next]";
   render();
 }
@@ -373,16 +513,82 @@ function emptyHTML(){
          '<div class="row"><button type="button" class="btn" data-level="1" data-autofocus>回到初階</button></div></section>';
 }
 
+/* ---------- 精熟度與題庫講解 ---------- */
+function levelName(l){return LEVELS.filter(function(p){return p[0]===l;})[0][1];}
+function masteryHTML(){
+  if(S.level==="m"){return "";}
+  var all=Q.filter(function(q){return q.l===S.level;}),ms=getMastered();
+  var n=all.filter(function(q){return ms.has(q.id);}).length,t=all.length,full=n===t;
+  return '<div><div class="stats"><span>'+levelName(S.level)+'精熟度</span><span><b class="okn">'+n+'</b> / '+t+' 題'+
+         (full?' <span class="best full">★ 通關</span>':'')+'</span></div>'+
+         '<div class="mbar" role="img" aria-label="已精熟 '+n+' 題，共 '+t+' 題"><i class="'+(full?"full":"")+'" style="width:'+Math.round(n/t*100)+'%"></i></div></div>';
+}
+function navHTML(){
+  return '<div class="nav"><div class="seg" role="group" aria-label="頁面">'+
+    [["practice","練習"],["teach","題庫講解"]].map(function(p){
+      return '<button type="button" data-view="'+p[0]+'" aria-pressed="'+(S.view===p[0])+'">'+p[1]+'</button>';
+    }).join("")+'</div></div>';
+}
+function teachQs(){return Q.filter(function(q){return q.l===S.tl;});}
+function slideStep(d){var k=S.tidx+d;if(k<0||k>=teachQs().length){return;}S.tidx=k;S.srev=false;}
+function teachControlsHTML(){
+  var lv=LEVELS.slice(0,3).map(function(p){
+    return '<button type="button" data-tlevel="'+p[0]+'" aria-pressed="'+(S.tl===p[0])+'">'+p[1]+'</button>';
+  }).join("");
+  var md=[["list","列表"],["slide","投影"]].map(function(p){
+    return '<button type="button" data-tmode="'+p[0]+'" aria-pressed="'+(S.tmode===p[0])+'">'+p[1]+'</button>';
+  }).join("");
+  var extra=S.tmode==="list"?'<button type="button" class="btn ghost" data-thide>'+(S.thide?"顯示全部答案":"遮住答案")+'</button>':"";
+  return '<div class="bar"><div class="seg" role="group" aria-label="難度">'+lv+'</div>'+
+         '<div class="row"><span class="seg" role="group" aria-label="呈現方式">'+md+'</span>'+extra+'</div></div>';
+}
+function teachListHTML(){
+  var qs=teachQs();
+  var h='<section class="sheet" aria-label="題庫列表"><div class="row split"><p class="prompt"><b>'+levelName(S.tl)+'</b>共 '+qs.length+' 題</p>'+
+        '<button type="button" class="btn" data-gopractice>開始練習這個難度</button></div><ol class="tlist">';
+  qs.forEach(function(q,k){
+    var shown=!S.thide||S.trev[q.id];
+    h+='<li><span class="no">'+(k+1)+'</span><div><p class="s">'+(shown?fixedSentence(q):q.chars.join(""))+'</p>'+
+       (shown?'<p class="n">'+q.n+'</p>':'')+'</div>'+
+       (shown?'':'<button type="button" class="btn ghost" data-trevi="'+q.id+'">看答案</button>')+'</li>';
+  });
+  return h+'</ol></section>';
+}
+function teachSlideHTML(){
+  var qs=teachQs();
+  if(S.tidx>=qs.length){S.tidx=0;}
+  var q=qs[S.tidx],last=S.tidx>=qs.length-1;
+  var grid='<div class="grid" role="group" aria-label="題目">'+q.chars.map(function(ch,i){
+    if(PUNCT.test(ch)){return '<span class="cell punct" aria-hidden="true">'+ch+'</span>';}
+    if(i===q.idx&&S.srev){return '<span class="cell fixed"><span class="new">'+q.c+'</span><span class="old">'+q.w+'</span></span>';}
+    return '<span class="cell">'+ch+'</span>';
+  }).join("")+'</div>';
+  var h='<section class="sheet slide" aria-label="投影講解"><div class="stats"><span>'+levelName(S.tl)+'　第 <b>'+(S.tidx+1)+'</b> / '+qs.length+' 題</span>'+
+        '<span>← → 換題　空白鍵看答案</span></div>'+grid;
+  if(S.srev){h+='<div class="fb good" role="status"><p class="chg"><del>'+q.w+'</del> → <ins>'+q.c+'</ins></p><p class="note">'+q.n+'</p></div>';}
+  else{h+='<p class="prompt">請找出句子裡的錯字。</p>';}
+  h+='<div class="row"><button type="button" class="btn ghost" data-tprev'+(S.tidx===0?' disabled':'')+'>上一題</button>';
+  if(!S.srev){h+='<button type="button" class="btn" data-trev data-autofocus>看答案</button>';}
+  h+='<button type="button" class="btn'+(S.srev?'':' ghost')+'" data-tnext'+(last?' disabled':'')+(S.srev?' data-autofocus':'')+'>下一題</button></div></section>';
+  return h;
+}
+
 function render(){
   var q=S.queue[S.i];
   var missedCount=getMissed().size;
   var h='<header><div class="stamp" aria-hidden="true">改</div><div><h1>改錯字練習</h1>'+
         '<p class="sub">找出句子裡的錯字，再用紅筆改正。</p></div></header>';
-  h+=controlsHTML(missedCount);
-  if(!S.queue.length){h+=emptyHTML();}
-  else if(S.done){h+=resultHTML();}
-  else{h+=progressHTML()+practiceHTML(q);}
-  h+='<footer>題庫共 '+Q.length+' 題。錯題只記在這個瀏覽器裡。</footer>';
+  h+=navHTML();
+  if(S.view==="teach"){
+    h+=teachControlsHTML()+(S.tmode==="slide"?teachSlideHTML():teachListHTML());
+  }else{
+    h+=controlsHTML(missedCount)+masteryHTML();
+    if(!S.queue.length){h+=emptyHTML();}
+    else if(S.done){h+=resultHTML();}
+    else{h+=progressHTML()+practiceHTML(q);}
+  }
+  h+='<footer>題庫共 '+Q.length+' 題，每個難度 50 題。錯題與精熟紀錄只記在這個瀏覽器裡。 '+
+     '<button type="button" class="link" data-reset>'+(S.confirmReset?"再按一次，確定清除":"清除這個瀏覽器的紀錄")+'</button></footer>';
   app.innerHTML=h;
   var sel=S.focus||"[data-autofocus]";
   S.focus=null;
@@ -409,6 +615,20 @@ app.addEventListener("click",function(e){
   }
   if(t.hasAttribute("data-again")){startRound();return;}
   if(t.hasAttribute("data-gomissed")){S.level="m";store.set("gc-level","m");startRound();return;}
+  if(t.hasAttribute("data-view")){S.view=t.getAttribute("data-view");S.focus='[data-view="'+S.view+'"]';render();return;}
+  if(t.hasAttribute("data-tlevel")){S.tl=Number(t.getAttribute("data-tlevel"));S.tidx=0;S.srev=false;S.trev={};S.focus='[data-tlevel="'+S.tl+'"]';render();return;}
+  if(t.hasAttribute("data-tmode")){S.tmode=t.getAttribute("data-tmode");S.srev=false;S.focus='[data-tmode="'+S.tmode+'"]';render();return;}
+  if(t.hasAttribute("data-thide")){S.thide=!S.thide;S.trev={};S.focus="[data-thide]";render();return;}
+  if(t.hasAttribute("data-trevi")){S.trev[t.getAttribute("data-trevi")]=true;S.focus=null;render();return;}
+  if(t.hasAttribute("data-trev")){S.srev=true;render();return;}
+  if(t.hasAttribute("data-tnext")){slideStep(1);S.focus=null;render();return;}
+  if(t.hasAttribute("data-tprev")){slideStep(-1);S.focus=null;render();return;}
+  if(t.hasAttribute("data-gopractice")){S.level=S.tl;store.set("gc-level",String(S.level));S.view="practice";startRound();window.scrollTo(0,0);return;}
+  if(t.hasAttribute("data-reset")){
+    if(!S.confirmReset){S.confirmReset=true;S.focus="[data-reset]";render();}
+    else{S.confirmReset=false;store.set("gc-missed","[]");store.set("gc-mastered","[]");store.set("gc-best","{}");startRound();}
+    return;
+  }
   if(!q||S.done){return;}
   if(t.hasAttribute("data-i")&&S.step==="find"){
     var i=Number(t.getAttribute("data-i"));
@@ -442,6 +662,18 @@ app.addEventListener("submit",function(e){
 });
 app.addEventListener("keydown",function(e){
   if(e.target&&e.target.id==="ans"&&e.key==="Enter"&&(e.isComposing||e.keyCode===229)){e.preventDefault();}
+});
+
+document.addEventListener("keydown",function(e){
+  if(S.view!=="teach"||S.tmode!=="slide"){return;}
+  var tag=e.target&&e.target.tagName;
+  if(tag==="INPUT"||tag==="TEXTAREA"){return;}
+  if(e.key==="ArrowRight"){slideStep(1);S.focus=null;render();e.preventDefault();}
+  else if(e.key==="ArrowLeft"){slideStep(-1);S.focus=null;render();e.preventDefault();}
+  else if((e.key===" "||e.key==="Enter")&&!(e.target&&e.target.closest&&e.target.closest("button"))){
+    if(!S.srev){S.srev=true;}else{slideStep(1);}
+    S.focus=null;render();e.preventDefault();
+  }
 });
 
 startRound();
