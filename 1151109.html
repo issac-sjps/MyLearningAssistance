@@ -1,0 +1,451 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>改錯字練習</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;700&display=swap">
+<style>
+/* Layout: one practice sheet (稿紙 grid) per question; sentence set in boxed cells, red-pen marks are the only loud color. */
+:root{
+  --paper:#EEF3F0;
+  --sheet:#FAFCFA;
+  --ink:#1B2A2E;
+  --muted:#586B70;
+  --grid:#AFC6B8;
+  --guide:#DCE8E1;
+  --line:#CFDDD5;
+  --pen:#D0322A;
+  --pen-soft:#FBE4E1;
+  --on-pen:#ffffff;
+  --ok:#17724B;
+  --ok-soft:#DDF1E5;
+  --gold:#F2C94C;
+  --gold-ink:#3B2A00;
+  --focus:#2B63D9;
+  --serif:"Noto Serif TC","Songti TC","PMingLiU","Source Han Serif TC",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --cell:clamp(38px,10.5vw,56px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#111918;--sheet:#172221;--ink:#E7F0EB;--muted:#94A9A1;--grid:#3A5246;--guide:#24352E;--line:#2C3E36;
+    --pen:#FF7568;--pen-soft:#3B1F1D;--on-pen:#2A0D0A;--ok:#6FD6A0;--ok-soft:#173326;--focus:#8DB8FF;--gold:#E5B93C;--gold-ink:#2A1E00;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#111918;--sheet:#172221;--ink:#E7F0EB;--muted:#94A9A1;--grid:#3A5246;--guide:#24352E;--line:#2C3E36;
+  --pen:#FF7568;--pen-soft:#3B1F1D;--on-pen:#2A0D0A;--ok:#6FD6A0;--ok-soft:#173326;--focus:#8DB8FF;--gold:#E5B93C;--gold-ink:#2A1E00;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;
+  padding-block:20px 48px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+button,input{font:inherit;color:inherit}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.wrap>*{min-width:0}
+
+header{display:flex;align-items:center;gap:14px}
+.stamp{flex:none;width:46px;height:46px;display:grid;place-items:center;border:2.5px solid var(--pen);border-radius:5px;color:var(--pen);font-family:var(--serif);font-weight:700;font-size:28px;line-height:1;transform:rotate(-6deg)}
+h1{margin:0;font-family:var(--serif);font-weight:700;font-size:28px;line-height:1.2;text-wrap:balance}
+.sub{margin:2px 0 0;color:var(--muted);font-size:14px}
+
+.bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--sheet)}
+.seg button{min-height:44px;padding:0 14px;border:0;background:transparent;cursor:pointer;font-weight:500}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.seg button:hover:not([aria-pressed="true"]){background:var(--guide)}
+.badge{display:inline-block;min-width:1.5em;margin-left:6px;padding:0 6px;border-radius:99px;background:var(--pen);color:var(--on-pen);font-size:12px;font-weight:700;line-height:1.5;text-align:center}
+.tag{font-size:13px;color:var(--muted);margin-right:8px}
+.best{margin-left:6px;padding:0 8px;border-radius:99px;font-size:12px;font-weight:700;line-height:1.6;color:var(--ok)}
+.seg button[aria-pressed="true"] .best:not(.full){color:var(--sheet);opacity:.85}
+.best.full,.seg button[aria-pressed="true"] .best.full{background:var(--gold);color:var(--gold-ink);opacity:1}
+.stats .okn{color:var(--ok)}
+.full-chip{align-self:flex-start;margin:0;padding:2px 14px;border-radius:99px;background:var(--gold);color:var(--gold-ink);font-weight:700}
+
+.stats{display:flex;justify-content:space-between;gap:12px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.stats b{color:var(--ink)}
+.prog{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;margin-top:6px}
+.prog i{height:6px;border-radius:3px;background:var(--line)}
+.prog i.ok{background:var(--ok)}
+.prog i.miss{background:var(--pen)}
+.prog i.cur{background:var(--ink)}
+
+.sheet{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:18px}
+.steps{display:flex;gap:8px;flex-wrap:wrap}
+.step{padding:1px 12px;border:1px solid var(--line);border-radius:99px;font-size:14px;color:var(--muted)}
+.step.on{background:var(--ink);border-color:var(--ink);color:var(--sheet);font-weight:700}
+.step.done{border-color:var(--ok);color:var(--ok);font-weight:700}
+
+.grid{display:flex;flex-wrap:wrap;gap:6px}
+.cell{
+  position:relative;width:var(--cell);height:var(--cell);padding:0;display:grid;place-items:center;
+  border:1.5px solid var(--grid);border-radius:3px;
+  font-family:var(--serif);font-weight:500;font-size:calc(var(--cell)*.6);line-height:1;color:var(--ink);
+  background-color:var(--sheet);
+  background-image:linear-gradient(var(--guide),var(--guide)),linear-gradient(var(--guide),var(--guide));
+  background-size:1px 100%,100% 1px;background-position:center;background-repeat:no-repeat;
+}
+button.cell{cursor:pointer}
+button.cell:hover:not(:disabled){border-color:var(--ink)}
+button.cell:disabled{cursor:default;color:var(--ink);opacity:1}
+.cell.punct{border-color:var(--line);color:var(--muted)}
+.cell.circled{border-color:var(--pen);border-radius:50%;box-shadow:0 0 0 2px var(--pen)}
+.cell.nope{border-color:var(--pen);background-color:var(--pen-soft);animation:shake .4s}
+.cell.fixed{border-color:var(--pen)}
+.cell.fixed .new{color:var(--pen);font-weight:700;animation:pop .35s ease-out}
+.cell.fixed .old{position:absolute;right:3px;bottom:1px;font-size:calc(var(--cell)*.3);color:var(--muted);text-decoration:line-through;text-decoration-color:var(--pen);text-decoration-thickness:2px}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes pop{from{transform:scale(1.5);opacity:.2}to{transform:scale(1);opacity:1}}
+
+.prompt{margin:0;font-size:18px}
+.prompt b{margin-right:.6em}
+.msg{margin:0;min-height:1.65em;color:var(--pen);font-weight:500}
+
+.opts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.opt{min-height:68px;border:1.5px solid var(--line);border-radius:8px;background:var(--sheet);cursor:pointer;font-family:var(--serif);font-weight:500;font-size:34px;line-height:1}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt.bad{border-color:var(--pen);color:var(--pen);opacity:.6;text-decoration:line-through;cursor:default}
+.typerow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.typerow input{width:7em;max-width:100%;min-height:60px;border:1.5px solid var(--grid);border-radius:8px;background:var(--sheet);text-align:center;font-family:var(--serif);font-size:30px}
+
+.btn{min-height:48px;padding:0 22px;border-radius:8px;border:1.5px solid var(--ink);background:var(--ink);color:var(--sheet);font-weight:700;cursor:pointer}
+.btn:hover{opacity:.9}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--ink);opacity:1}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.link{min-height:44px;padding:0 4px;border:0;background:transparent;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.link:hover{color:var(--ink)}
+:is(button,input):focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+.fb{padding:14px 16px;border-radius:8px;display:flex;flex-direction:column;gap:6px}
+.fb.good{background:var(--ok-soft)}
+.fb.fix{background:var(--pen-soft)}
+.fb h2{margin:0;font-size:18px}
+.fb.good h2{color:var(--ok)}
+.fb.fix h2{color:var(--pen)}
+.fb p{margin:0}
+.chg del,.mk del{color:var(--muted);text-decoration-color:var(--pen);text-decoration-thickness:2px}
+.chg ins,.mk ins{color:var(--pen);font-weight:700;text-decoration:none}
+.chg{font-family:var(--serif);font-size:20px}
+.mk ins{margin-left:2px}
+
+.result .eyebrow{margin:0;color:var(--muted);font-size:14px}
+.score{margin:0;font-family:var(--serif);font-weight:700;font-size:64px;line-height:1.1;font-variant-numeric:tabular-nums}
+.score small{font-size:28px;color:var(--muted);font-weight:500}
+.review{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.review li{padding-top:12px;border-top:1px solid var(--line)}
+.review .s{margin:0;font-family:var(--serif);font-size:20px;line-height:1.7}
+.review .n{margin:2px 0 0;color:var(--muted);font-size:15px}
+.empty{text-align:left}
+.empty p{margin:0}
+footer{color:var(--muted);font-size:13px}
+
+@media (max-width:460px){
+  .opts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sheet{padding:16px}
+  h1{font-size:24px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap" id="app"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* 題庫：{ } 框住的字是錯字；c=正確字；d=兩個干擾字；n=辨別說明 */
+var Q=[
+/* 初階：常用字混淆 */
+{l:1,s:"明天請你{在}來一次。",c:"再",d:"才載",n:"「再」表示重複、又一次；「在」表示位置或正在進行。再來一次是重複，所以用「再」。"},
+{l:1,s:"小鳥快樂{得}唱著歌。",c:"地",d:"的底",n:"「地」放在動詞前面，形容動作的樣子（快樂地唱）；「得」放在動詞後面，補充說明結果。"},
+{l:1,s:"他跑{的}真快，一下子就到終點。",c:"得",d:"地德",n:"「得」放在動詞後面，說明做得怎麼樣（跑得快）。"},
+{l:1,s:"弟弟長得很{象}爸爸。",c:"像",d:"相向",n:"「像」表示相似；「象」是大象、現象。"},
+{l:1,s:"天色{己}經黑了，我們快回家吧。",c:"已",d:"以巳",n:"「已經」表示事情完成了，要寫「已」，不是自己的「己」。"},
+{l:1,s:"請大家{座}下，老師要開始上課了。",c:"坐",d:"做作",n:"「坐」是動作，坐下來；「座」是座位，是名詞。"},
+{l:1,s:"我從{末}看過這部電影，覺得很新鮮。",c:"未",d:"木朱",n:"「從未」是從來沒有，「未」是還沒有的意思；「末」是最後。"},
+{l:1,s:"中{牛}十二點，大家一起吃午餐。",c:"午",d:"干千",n:"「中午」的「午」豎畫不出頭；「牛」的豎畫要出頭。"},
+{l:1,s:"我有一個問題想{間}老師。",c:"問",d:"門聞",n:"「問」是門裡面有口，表示開口發問；「間」是門裡面有日，表示中間、時間。"},
+{l:1,s:"天氣變冷了，小心不要感{帽}。",c:"冒",d:"胃目",n:"「感冒」的「冒」是生病；「帽」是戴在頭上的帽子。"},
+{l:1,s:"爺爺{帶}著老花眼鏡看報紙。",c:"戴",d:"代袋",n:"「戴」用在帽子、眼鏡、手錶等穿在身上的東西；「帶」是攜帶。"},
+{l:1,s:"我想{拔}一通電話給媽媽。",c:"撥",d:"發潑",n:"「撥電話」是用手指撥動、按壓號碼，所以用提手旁的「撥」。"},
+{l:1,s:"他的考試成{積}進步了很多。",c:"績",d:"跡蹟",n:"「績」是絞絲旁，表示成果、功勞；「積」是禾字旁，如「累積」。"},
+{l:1,s:"學校舉辦{做}文比賽，我也報名了。",c:"作",d:"坐座",n:"「作文」是寫文章，要用人字旁的「作」；「做」多用在做事、做功課。"},
+{l:1,s:"我每天放學都要{鍊}習鋼琴。",c:"練",d:"煉陳",n:"「練習」是反覆學習，要用絞絲旁的「練」；金字旁的「鍊」是鐵鍊。"},
+/* 中階：形近字與詞語 */
+{l:2,s:"他{喝}望能參加這次比賽。",c:"渴",d:"竭葛",n:"「渴望」是心裡很想要，像口渴想喝水一樣，所以是三點水的「渴」。"},
+{l:2,s:"老師常常鼓{厲}我們要勇敢嘗試。",c:"勵",d:"例礪",n:"「鼓勵」是用話語讓人有信心，「勵」字裡有「力」。"},
+{l:2,s:"他得了第一名，卻依然很{嫌}虛。",c:"謙",d:"歉廉",n:"「謙虛」是不自滿，「謙」是言字旁。"},
+{l:2,s:"媽媽{蕉}急地在門口等我回家。",c:"焦",d:"礁嬌",n:"「焦急」是急得像被火烤，「焦」下面有四點火；「蕉」是香蕉。"},
+{l:2,s:"不要因為成績好就{嬌}傲自滿。",c:"驕",d:"矯橋",n:"「驕傲」的「驕」是馬字旁；「嬌」是女字旁，如嬌小。"},
+{l:2,s:"圖書館裡的藏書非常{風}富。",c:"豐",d:"楓峰",n:"「豐富」表示很多，「豐」字的形狀像器皿裡裝滿東西。"},
+{l:2,s:"他一個人搬到{莫}生的城市工作。",c:"陌",d:"漠墨",n:"「陌生」是不熟悉，「陌」是左耳旁。"},
+{l:2,s:"跑了一整天，他覺得非常{披}倦。",c:"疲",d:"被波",n:"「疲倦」是很累，「疲」是病字旁，表示身體不舒服。"},
+{l:2,s:"新教室的空間很寬{廠}，大家都很喜歡。",c:"敞",d:"場暢",n:"「寬敞」表示空間大。「敞」不是工廠的「廠」。"},
+{l:2,s:"他每次寫考卷都太{租}心，才會錯那麼多。",c:"粗",d:"祖組",n:"「粗心」是不細心，「粗」是米字旁。"},
+{l:2,s:"過馬路時要小心，不可以做{為}險的事。",c:"危",d:"偽圍",n:"「危險」是可能發生傷害，要用「危」。"},
+{l:2,s:"媽媽{見}議我們出門前先檢查窗戶。",c:"建",d:"健鍵",n:"「建議」是提出自己的想法給別人參考，不是看見的「見」。"},
+{l:2,s:"上課時要{傳}心聽講，不可以和同學說話。",c:"專",d:"轉團",n:"「專心」是把注意力集中在一件事上。"},
+{l:2,s:"他是班上最{憂}秀的學生，大家都很佩服他。",c:"優",d:"擾幽",n:"「優秀」是很好，「優」是人字旁；「憂」是憂愁。"},
+{l:2,s:"他{永}敢地跳進水裡救起了小狗。",c:"勇",d:"湧甬",n:"「勇敢」是有膽量，「勇」字下面是「力」。"},
+/* 高階：成語 */
+{l:3,s:"雖然這次比賽輸了，但是我們要再接再{勵}。",c:"厲",d:"礪例",n:"「再接再厲」是一次又一次地努力。「厲」有磨利的意思。"},
+{l:3,s:"聽到要去遊樂園，弟弟迫不{急}待地收拾書包。",c:"及",d:"級汲",n:"「迫不及待」是急得來不及等待。「及」是趕上、來得及。"},
+{l:3,s:"遇到這麼難的問題，大家都一{愁}莫展。",c:"籌",d:"稠酬",n:"「一籌莫展」是一點辦法也想不出來。「籌」是計策、辦法。"},
+{l:3,s:"他不但沒有改過，反而變本加{利}。",c:"厲",d:"勵礪",n:"「變本加厲」是比以前更嚴重。「厲」是猛烈、嚴重。"},
+{l:3,s:"兩個人針{峰}相對，吵得不可開交。",c:"鋒",d:"蜂逢",n:"「針鋒相對」是雙方的主張尖銳對立。「鋒」是金字旁，指刀劍的尖端。"},
+{l:3,s:"新蓋的圖書館真是美輪美{煥}。",c:"奐",d:"換喚",n:"「美輪美奐」是形容房屋高大華麗。「奐」是盛大、鮮明的意思。"},
+{l:3,s:"假日的高速公路上，車輛{穿}流不息。",c:"川",d:"串傳",n:"「川流不息」是像河水一樣不停流動。「川」就是河流。"},
+{l:3,s:"他在比賽中脫{影}而出，贏得了冠軍。",c:"穎",d:"潁類",n:"「脫穎而出」是才能完全顯露出來。「穎」指尖端，像錐尖從袋子裡露出來。"},
+{l:3,s:"做人不要好高{務}遠，要一步一步踏實地學習。",c:"騖",d:"霧誤",n:"「好高騖遠」是不切實際地追求過高、過遠的目標。「騖」是馬字旁，指奔馳追求。"},
+{l:3,s:"這位作家嘔心{歷}血，才寫成這部小說。",c:"瀝",d:"曆厲",n:"「嘔心瀝血」是費盡心血。「瀝」是三點水，指液體一滴一滴落下。"},
+{l:3,s:"大家眾志成{誠}，終於完成了這項困難的任務。",c:"城",d:"成呈",n:"「眾志成城」是大家同心協力，力量就像城牆一樣堅固。"},
+{l:3,s:"上課時要全神{灌}注，才聽得懂老師的講解。",c:"貫",d:"慣冠",n:"「全神貫注」是精神完全集中。「貫」是貫穿、集中。"},
+{l:3,s:"他做事{競}競業業，從來不敢偷懶。",c:"兢",d:"鏡境",n:"「兢兢業業」是小心謹慎、認真負責。「兢兢」表示小心謹慎的樣子。"},
+{l:3,s:"不要因為一次失敗，就自暴自{氣}。",c:"棄",d:"器棋",n:"「自暴自棄」是自己不求上進，放棄自己。「棄」是丟掉、放棄。"},
+{l:3,s:"這裡山明水秀，簡直像世外桃{原}一樣。",c:"源",d:"園圓",n:"「世外桃源」是與世隔絕的美好地方，出自〈桃花源記〉。「源」是三點水。"}
+];
+var PUNCT=/[\p{P}\s]/u;
+Q.forEach(function(q,i){
+  var a=q.s.indexOf("{"),b=q.s.indexOf("}");
+  q.id=i;
+  q.w=q.s.slice(a+1,b);
+  q.chars=Array.from(q.s.replace(/[{}]/g,""));
+  q.idx=Array.from(q.s.slice(0,a)).length;
+});
+
+var LEVELS=[[1,"初階"],[2,"中階"],[3,"高階"],["m","錯題本"]];
+var ROUND=10;
+var app=document.getElementById("app");
+
+var mem={};
+var store={
+  get:function(k){try{var v=localStorage.getItem(k);return v==null?mem[k]:v;}catch(e){return mem[k];}},
+  set:function(k,v){mem[k]=v;try{localStorage.setItem(k,v);}catch(e){}}
+};
+function getBest(){try{return JSON.parse(store.get("gc-best")||"{}");}catch(e){return {};}}
+function recordBest(){
+  var n=S.results.length;if(!n){return;}
+  var ok=S.results.filter(function(r){return r.ok;}).length;
+  var b=getBest(),k=String(S.level),old=b[k];
+  if(!old||ok/n>old.ok/old.n){b[k]={ok:ok,n:n};store.set("gc-best",JSON.stringify(b));}
+}
+function getMissed(){try{return new Set(JSON.parse(store.get("gc-missed")||"[]"));}catch(e){return new Set();}}
+function saveMissed(s){store.set("gc-missed",JSON.stringify(Array.from(s)));}
+
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+var S={
+  level:(function(){var v=store.get("gc-level");return v==="m"?"m":(["1","2","3"].indexOf(v)>=0?Number(v):1);})(),
+  mode:store.get("gc-mode")==="type"?"type":"choice",
+  queue:[],i:0,results:[],done:false,
+  step:"find",errs:0,solved:false,revealed:false,hint:false,msg:"",shake:-1,opts:[],bad:{},focus:null
+};
+
+function pool(){
+  if(S.level==="m"){var m=getMissed();return Q.filter(function(q){return m.has(q.id);});}
+  return Q.filter(function(q){return q.l===S.level;});
+}
+function resetQ(){
+  S.step="find";S.errs=0;S.solved=false;S.revealed=false;S.hint=false;S.msg="";S.shake=-1;S.bad={};
+  var q=S.queue[S.i];
+  S.opts=q?shuffle([q.c,q.w].concat(Array.from(q.d))):[];
+}
+function startRound(){
+  S.queue=shuffle(pool()).slice(0,ROUND);
+  S.i=0;S.results=[];S.done=false;
+  resetQ();render();
+}
+
+function finish(ok){
+  var q=S.queue[S.i],m=getMissed();
+  S.solved=true;S.step="fix";S.msg="";
+  S.results.push({id:q.id,ok:ok});
+  if(ok){m.delete(q.id);}else{m.add(q.id);}
+  saveMissed(m);
+  S.focus="[data-next]";
+  render();
+}
+
+/* ---------- 畫面 ---------- */
+function controlsHTML(missedCount){
+  var best=getBest();
+  var lv=LEVELS.map(function(p){
+    var on=S.level===p[0];
+    var badge=p[0]==="m"&&missedCount?'<span class="badge">'+missedCount+'</span>':"";
+    var b=best[String(p[0])],chip="";
+    if(b){chip=b.ok===b.n?'<span class="best full">★ 全對</span>':'<span class="best">最佳 '+b.ok+'/'+b.n+'</span>';}
+    return '<button type="button" data-level="'+p[0]+'" aria-pressed="'+on+'">'+p[1]+badge+chip+'</button>';
+  }).join("");
+  var md=[["choice","選字"],["type","輸入"]].map(function(p){
+    return '<button type="button" data-mode="'+p[0]+'" aria-pressed="'+(S.mode===p[0])+'">'+p[1]+'</button>';
+  }).join("");
+  return '<div class="bar"><div class="seg" role="group" aria-label="難度">'+lv+'</div>'+
+         '<div><span class="tag">改正方式</span><span class="seg" role="group" aria-label="改正方式">'+md+'</span></div></div>';
+}
+function progressHTML(){
+  var okN=S.results.filter(function(r){return r.ok;}).length;
+  var segs=S.queue.map(function(_,k){
+    var c=k<S.results.length?(S.results[k].ok?"ok":"miss"):(k===S.i?"cur":"");
+    return '<i class="'+c+'"></i>';
+  }).join("");
+  return '<div><div class="stats"><span>第 <b>'+(S.i+1)+'</b> / '+S.queue.length+' 題</span><span>一次答對 <b class="okn">'+okN+'</b> / '+S.results.length+' 題</span></div>'+
+         '<div class="prog" role="img" aria-label="第 '+(S.i+1)+' 題，共 '+S.queue.length+' 題">'+segs+'</div></div>';
+}
+function sentenceHTML(q){
+  return '<div class="grid" role="group" aria-label="練習句子">'+q.chars.map(function(ch,i){
+    if(PUNCT.test(ch)){return '<span class="cell punct" aria-hidden="true">'+ch+'</span>';}
+    if(i===q.idx&&S.solved){
+      return '<span class="cell fixed" aria-label="「'+q.w+'」改成「'+q.c+'」"><span class="new">'+q.c+'</span><span class="old">'+q.w+'</span></span>';
+    }
+    var cls="cell";
+    if(i===q.idx&&S.step==="fix"){cls+=" circled";}
+    if(S.shake===i){cls+=" nope";}
+    var af=S.shake===i?" data-autofocus":"";
+    return '<button type="button" class="'+cls+'" data-i="'+i+'"'+(S.step!=="find"?" disabled":"")+af+' aria-label="'+ch+'">'+ch+'</button>';
+  }).join("")+'</div>';
+}
+function practiceHTML(q){
+  var h='<section class="sheet" aria-label="練習">';
+  h+='<div class="steps"><span class="step '+(S.step==="find"?"on":"done")+'">1　找錯字</span>'+
+     '<span class="step '+(S.solved?"done":(S.step==="fix"?"on":""))+'">2　改正</span></div>';
+  h+=sentenceHTML(q);
+  if(S.solved){
+    var perfect=S.results[S.results.length-1].ok;
+    var last=S.i>=S.queue.length-1;
+    h+='<div class="fb '+(perfect?"good":"fix")+'" role="status">'+
+       '<h2>'+(perfect?"答對了！":(S.revealed?"正確答案在這裡":"改正完成"))+'</h2>'+
+       '<p class="chg"><del>'+q.w+'</del> → <ins>'+q.c+'</ins></p><p>'+q.n+'</p></div>';
+    h+='<div class="row"><button type="button" class="btn" data-next data-autofocus>'+(last?"看成績":"下一題")+'</button></div>';
+  }else if(S.step==="find"){
+    var part=q.idx/q.chars.length;
+    h+='<p class="prompt"><b>點出錯字</b>點一下句子裡你覺得寫錯的那個字。</p>';
+    if(S.hint){h+='<p class="prompt">提示：錯字在句子的'+(part<1/3?"前段":(part<2/3?"中段":"後段"))+'。</p>';}
+    h+='<p class="msg" role="status" aria-live="polite">'+S.msg+'</p>';
+    h+='<div class="row">'+(S.hint?"":'<button type="button" class="link" data-hint>給我提示</button>')+
+       (S.errs>=2?'<button type="button" class="link" data-reveal>直接看答案</button>':"")+'</div>';
+  }else{
+    h+='<p class="prompt"><b>改正</b>「'+q.w+'」要改成哪一個字？</p>';
+    if(S.mode==="choice"){
+      h+='<div class="opts" role="group" aria-label="選一個字">'+S.opts.map(function(ch){
+        var bad=S.bad[ch];
+        return '<button type="button" class="opt'+(bad?" bad":"")+'" data-ch="'+ch+'"'+(bad?" disabled":"")+' aria-label="選 '+ch+'">'+ch+'</button>';
+      }).join("")+'</div>';
+    }else{
+      h+='<form class="typerow" data-form><label class="tag" for="ans">輸入正確的字</label>'+
+         '<input id="ans" type="text" lang="zh-TW" autocomplete="off" autocapitalize="off" spellcheck="false" data-autofocus>'+
+         '<button type="submit" class="btn">確定</button></form>';
+    }
+    h+='<p class="msg" role="status" aria-live="polite">'+S.msg+'</p>';
+    if(S.errs>=2){h+='<div class="row"><button type="button" class="link" data-reveal>直接看答案</button></div>';}
+  }
+  return h+'</section>';
+}
+function fixedSentence(q){
+  return q.chars.slice(0,q.idx).join("")+'<span class="mk"><del>'+q.w+'</del><ins>'+q.c+'</ins></span>'+q.chars.slice(q.idx+1).join("");
+}
+function resultHTML(){
+  var n=S.results.length,okN=S.results.filter(function(r){return r.ok;}).length;
+  var miss=S.results.filter(function(r){return !r.ok;}).map(function(r){return Q[r.id];});
+  var ratio=n?okN/n:0;
+  var line=ratio>=0.9?"幾乎沒有漏網的錯字。":(ratio>=0.6?"不錯，把下面幾題再看一遍。":"錯字要多看幾次才記得住，先複習下面這幾題。");
+  var h='<section class="sheet result" aria-label="本輪成績">'+(n&&okN===n?'<p class="full-chip">★ 全對！</p>':'')+'<p class="eyebrow">本輪成績</p>'+
+        '<p class="score">'+okN+' <small>/ '+n+'</small></p><p>一次就答對 '+okN+' 題。'+line+'</p>';
+  if(miss.length){
+    h+='<ul class="review">'+miss.map(function(q){
+      return '<li><p class="s">'+fixedSentence(q)+'</p><p class="n">'+q.n+'</p></li>';
+    }).join("")+'</ul>';
+  }
+  var mc=getMissed().size;
+  h+='<div class="row"><button type="button" class="btn" data-again data-autofocus>再練一輪</button>'+
+     (mc&&S.level!=="m"?'<button type="button" class="btn ghost" data-gomissed>練習錯題本（'+mc+'）</button>':"")+'</div></section>';
+  return h;
+}
+function emptyHTML(){
+  return '<section class="sheet empty" aria-label="錯題本"><p class="prompt"><b>錯題本是空的</b></p>'+
+         '<p>答錯或看了答案的題目，會自動收進這裡。先從初階開始練習吧。</p>'+
+         '<div class="row"><button type="button" class="btn" data-level="1" data-autofocus>回到初階</button></div></section>';
+}
+
+function render(){
+  var q=S.queue[S.i];
+  var missedCount=getMissed().size;
+  var h='<header><div class="stamp" aria-hidden="true">改</div><div><h1>改錯字練習</h1>'+
+        '<p class="sub">找出句子裡的錯字，再用紅筆改正。</p></div></header>';
+  h+=controlsHTML(missedCount);
+  if(!S.queue.length){h+=emptyHTML();}
+  else if(S.done){h+=resultHTML();}
+  else{h+=progressHTML()+practiceHTML(q);}
+  h+='<footer>題庫共 '+Q.length+' 題。錯題只記在這個瀏覽器裡。</footer>';
+  app.innerHTML=h;
+  var sel=S.focus||"[data-autofocus]";
+  S.focus=null;
+  var f=app.querySelector(sel);
+  if(f){try{f.focus({preventScroll:true});}catch(e){f.focus();}}
+}
+
+/* ---------- 操作 ---------- */
+function wrong(msg){S.errs++;S.msg=msg;}
+app.addEventListener("click",function(e){
+  var t=e.target.closest("button");
+  if(!t||!app.contains(t)){return;}
+  var q=S.queue[S.i];
+  if(t.hasAttribute("data-level")){
+    var v=t.getAttribute("data-level");
+    S.level=v==="m"?"m":Number(v);store.set("gc-level",String(S.level));
+    S.focus='[data-level="'+v+'"]';startRound();return;
+  }
+  if(t.hasAttribute("data-mode")){
+    S.mode=t.getAttribute("data-mode");store.set("gc-mode",S.mode);
+    S.focus='[data-mode="'+S.mode+'"]';
+    if(!S.solved&&S.step==="fix"){S.msg="";}
+    render();return;
+  }
+  if(t.hasAttribute("data-again")){startRound();return;}
+  if(t.hasAttribute("data-gomissed")){S.level="m";store.set("gc-level","m");startRound();return;}
+  if(!q||S.done){return;}
+  if(t.hasAttribute("data-i")&&S.step==="find"){
+    var i=Number(t.getAttribute("data-i"));
+    if(i===q.idx){S.step="fix";S.msg="";S.shake=-1;S.focus=S.mode==="type"?"#ans":".opt";}
+    else{wrong("「"+q.chars[i]+"」沒有錯，再找找看。");S.shake=i;}
+    render();return;
+  }
+  if(t.hasAttribute("data-hint")){S.hint=true;render();return;}
+  if(t.hasAttribute("data-reveal")){S.revealed=true;finish(false);return;}
+  if(t.hasAttribute("data-ch")&&S.step==="fix"&&!S.solved){
+    var ch=t.getAttribute("data-ch");
+    if(ch===q.c){finish(S.errs===0);}
+    else{S.bad[ch]=true;wrong("不是「"+ch+"」，再想想。");S.focus=".opt:not(:disabled)";render();}
+    return;
+  }
+  if(t.hasAttribute("data-next")){
+    if(S.i>=S.queue.length-1){S.done=true;recordBest();render();window.scrollTo(0,0);}
+    else{S.i++;resetQ();S.focus=null;render();}
+  }
+});
+app.addEventListener("submit",function(e){
+  if(!e.target.hasAttribute("data-form")){return;}
+  e.preventDefault();
+  var q=S.queue[S.i];
+  if(!q||S.solved){return;}
+  var v=Array.from(document.getElementById("ans").value.trim());
+  if(v.length===0){S.msg="請先輸入一個字。";render();return;}
+  if(v.length>1){S.msg="只要輸入一個字喔。";render();return;}
+  if(v[0]===q.c){finish(S.errs===0);}
+  else{wrong("不是「"+v[0]+"」，再想想。");render();}
+});
+app.addEventListener("keydown",function(e){
+  if(e.target&&e.target.id==="ans"&&e.key==="Enter"&&(e.isComposing||e.keyCode===229)){e.preventDefault();}
+});
+
+startRound();
+})();
+</script>
+
+</body></html>
