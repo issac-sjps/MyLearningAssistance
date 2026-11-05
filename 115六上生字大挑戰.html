@@ -3,97 +3,86 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>本冊生字大挑戰 — 1至8課生字練習</title>
+<title>本冊生字改錯字大挑戰 — 1至8課</title>
 <style>
-/* 單檔、不用連網，iPad / 電腦 / 手機都能開。老師要改生字：只改下面 <script> 裡的 DATA。 */
-:root{
-  --paper:#f2f7f3; --card:#ffffff; --ink:#1d2b22; --muted:#5b6f62;
-  --line:#d7e4d9; --green:#1e7a46; --green-soft:#ddf1e5; --red:#c0272d; --red-soft:#fbe4e1;
-  --gold:#f2c94c; --blue:#1f4e79; --blue-soft:#e2eef8; --orange:#c2410c;
-  --radius:16px;
-}
+:root{--paper:#eef3f0;--sheet:#fafcfa;--ink:#1b2a2e;--muted:#586b70;--grid:#afc6b8;--guide:#dce8e1;--line:#cfddd5;--pen:#d0322a;--pen-soft:#fbe4e1;--ok:#17724b;--ok-soft:#ddf1e5;--gold:#f2c94c;--gold-ink:#3b2a00;--focus:#2b63d9;--blue:#1f4e79;--serif:"Noto Serif TC","Songti TC","PMingLiU",serif;--sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;--cell:clamp(38px,10.5vw,56px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);
-  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
-  font-size:17px;line-height:1.6;padding:16px 16px 64px}
-button{font:inherit;color:inherit;cursor:pointer}
-.wrap{max-width:920px;margin:0 auto}
-header{text-align:center;padding:8px 4px 4px}
-h1{margin:6px 0 2px;font-size:34px;line-height:1.2}
-.sub{color:var(--muted);margin:0 0 14px}
-.badge{display:inline-block;background:var(--gold);border-radius:99px;padding:2px 12px;font-weight:700;font-size:14px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin:14px 0}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;padding:20px 16px 48px}
+button,input{font:inherit;color:inherit}
+.wrap{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+header{text-align:center}
+h1{margin:6px 0 2px;font-family:var(--serif);font-size:32px}
+.sub{color:var(--muted);margin:0}
+.badge{display:inline-block;background:var(--gold);color:var(--gold-ink);border-radius:99px;padding:2px 12px;font-weight:700;font-size:14px}
+.card{background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:18px}
 h2{margin:0 0 10px;font-size:22px}
 h3{margin:14px 0 8px;font-size:18px}
 .muted{color:var(--muted);font-size:14px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
 .lesson{border:2px solid var(--line);border-radius:14px;padding:14px;background:#fff;text-align:left;min-height:132px}
-.lesson:hover{border-color:var(--green)}
+.lesson:hover{border-color:var(--ok)}
 .lesson b{font-size:20px}
-.lesson .n{font-size:15px;color:var(--muted);margin-top:4px}
-.lesson .best{margin-top:8px;font-size:14px;color:var(--green);font-weight:700}
+.lesson .n{font-size:14px;color:var(--muted);margin-top:4px}
+.lesson .best{margin-top:8px;font-size:14px;color:var(--ok);font-weight:700}
 .lesson .best.empty{color:var(--muted);font-weight:400}
 .bigrow{display:flex;flex-wrap:wrap;gap:10px}
-.btn{min-height:52px;padding:10px 20px;border-radius:12px;border:2px solid var(--ink);background:var(--ink);color:#fff;font-weight:700;font-size:17px}
+.btn{min-height:52px;padding:10px 20px;border-radius:10px;border:2px solid var(--ink);background:var(--ink);color:#fff;font-weight:700;font-size:17px}
 .btn.ghost{background:#fff;color:var(--ink);border-color:var(--line)}
-.btn.green{background:var(--green);border-color:var(--green)}
-.btn:disabled{opacity:.45;cursor:default}
+.btn.green{background:var(--ok);border-color:var(--ok)}
+.btn:disabled{opacity:.45}
 .linkbtn{background:none;border:0;color:var(--blue);text-decoration:underline;padding:10px 4px}
-.pill{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:2px 12px;margin:2px 4px 2px 0;font-size:14px;color:var(--muted)}
-.pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-/* 題目區 */
-.qhead{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:15px}
-.prog{height:10px;background:#e6efe8;border-radius:99px;overflow:hidden;margin:10px 0}
-.prog i{display:block;height:100%;background:var(--green);width:0}
-.q{font-size:26px;font-weight:700;margin:14px 0 6px;line-height:1.5}
-.q .bigchar{font-size:64px;line-height:1.1}
-.q .zy{font-size:30px;color:var(--blue)}
-.hint{color:var(--muted);font-size:15px;margin:0 0 10px}
-.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
-.opt{min-height:84px;border:2px solid var(--line);border-radius:14px;background:#fff;font-size:44px;font-weight:700;padding:8px}
-.opt.zy{font-size:30px}
+.steps{display:flex;gap:8px;flex-wrap:wrap}
+.step{padding:1px 12px;border:1px solid var(--line);border-radius:99px;font-size:14px;color:var(--muted)}
+.step.on{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:700}
+.step.done{border-color:var(--ok);color:var(--ok);font-weight:700}
+.stats{display:flex;justify-content:space-between;gap:12px;font-size:14px;color:var(--muted)}
+.stats b{color:var(--ink)}
+.prog{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;margin-top:6px}
+.prog i{height:6px;border-radius:3px;background:var(--line)}
+.prog i.ok{background:var(--ok)} .prog i.miss{background:var(--pen)} .prog i.cur{background:var(--ink)}
+.grid{display:flex;flex-wrap:wrap;gap:6px}
+.cell{position:relative;width:var(--cell);height:var(--cell);padding:0;display:grid;place-items:center;border:1.5px solid var(--grid);border-radius:3px;font-family:var(--serif);font-weight:500;font-size:calc(var(--cell)*.6);line-height:1;background:var(--sheet);background-image:linear-gradient(var(--guide),var(--guide)),linear-gradient(var(--guide),var(--guide));background-size:1px 100%,100% 1px;background-position:center;background-repeat:no-repeat}
+button.cell{cursor:pointer}
+button.cell:hover:not(:disabled){border-color:var(--ink)}
+button.cell:disabled{cursor:default}
+.cell.punct{border-color:var(--line);color:var(--muted)}
+.cell.circled{border-color:var(--pen);border-radius:50%;box-shadow:0 0 0 2px var(--pen)}
+.cell.nope{border-color:var(--pen);background-color:var(--pen-soft);animation:shake .4s}
+.cell.fixed{border-color:var(--pen)}
+.cell.fixed .new{color:var(--pen);font-weight:700}
+.cell.fixed .old{position:absolute;right:3px;bottom:1px;font-size:calc(var(--cell)*.3);color:var(--muted);text-decoration:line-through;text-decoration-color:var(--pen);text-decoration-thickness:2px}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.prompt{margin:14px 0 0;font-size:18px}
+.prompt b{margin-right:.6em}
+.msg{margin:6px 0 0;min-height:1.65em;color:var(--pen);font-weight:500}
+.opts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+.opt{min-height:68px;border:1.5px solid var(--line);border-radius:8px;background:var(--sheet);cursor:pointer;font-family:var(--serif);font-weight:500;font-size:34px}
 .opt:hover:not(:disabled){border-color:var(--ink)}
-.opt.correct{border-color:var(--green);background:var(--green-soft);color:var(--green)}
-.opt.wrong{border-color:var(--red);background:var(--red-soft);color:var(--red);text-decoration:line-through}
-.opt:disabled{cursor:default}
-.fb{border-radius:12px;padding:12px 14px;margin-top:14px;font-size:17px}
-.fb.good{background:var(--green-soft);color:var(--green)}
-.fb.bad{background:var(--red-soft);color:var(--red)}
-.fb .ans{font-size:22px;font-weight:700}
-.typein{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
-.typein input{flex:1;min-width:180px;min-height:64px;font-size:36px;text-align:center;border:2px solid var(--line);border-radius:12px;padding:6px}
-.typein input:focus{outline:3px solid #8db8ff}
-/* 生字表 */
-.ztable{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
-.zcell{border:1px solid var(--line);border-radius:10px;padding:8px 4px;text-align:center;background:#fff;cursor:pointer}
-.zcell:hover{border-color:var(--green)}
-.zcell .c{font-size:36px;line-height:1.1}
-.zcell .z{font-size:14px;color:var(--blue)}
-.zcell .w{font-size:13px;color:var(--muted)}
+.opt.bad{border-color:var(--pen);color:var(--pen);opacity:.6;text-decoration:line-through;cursor:default}
+.typerow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+.typerow input{width:7em;min-height:60px;border:1.5px solid var(--grid);border-radius:8px;background:var(--sheet);text-align:center;font-family:var(--serif);font-size:30px}
+.fb{padding:14px 16px;border-radius:8px;margin-top:14px}
+.fb.good{background:var(--ok-soft)} .fb.fix{background:var(--pen-soft)}
+.fb h2{margin:0;font-size:18px} .fb.good h2{color:var(--ok)} .fb.fix h2{color:var(--pen)}
+.fb p{margin:4px 0 0}
+.chg{font-family:var(--serif);font-size:22px}
+.chg del{color:var(--muted);text-decoration-color:var(--pen);text-decoration-thickness:2px}
+.chg ins{color:var(--pen);font-weight:700;text-decoration:none}
 .score{font-size:64px;font-weight:800;line-height:1.1;margin:6px 0}
 .review{list-style:none;margin:0;padding:0}
 .review li{border-top:1px solid var(--line);padding:10px 0}
-@media (max-width:560px){
-  h1{font-size:28px}.q{font-size:22px}.opt{font-size:36px;min-height:76px}
-  .opts{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media print{
-  body{background:#fff;padding:0}
-  .noprint{display:none!important}
-  .card{border:1px solid #999;break-inside:avoid}
-}
+.ztable{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.zcell{border:1px solid var(--line);border-radius:10px;padding:8px 4px;text-align:center;background:#fff;cursor:pointer}
+.zcell .c{font-size:36px;line-height:1.1}.zcell .z{font-size:14px;color:var(--blue)}.zcell .w{font-size:13px;color:var(--muted)}
+@media (max-width:460px){.opts{grid-template-columns:repeat(2,minmax(0,1fr))}h1{font-size:26px}}
+@media print{body{background:#fff}.noprint{display:none!important}.card{border:1px solid #999;break-inside:avoid}}
 </style>
 </head>
 <body>
 <div class="wrap" id="app"></div>
 <script>
 "use strict";
-/* ============================================================
-   生字資料（依圖片「本冊生字」整理，共 8 課、143 字）
-   格式：{c:"字", z:"注音", w:"詞語", p:詞語中這個字的位置(0起算)}
-   沒有把握的詞語就不填 w，那個字仍會有注音選字、看字選注音兩題。
-   老師要改：改這裡就好，題目會自動跟著改。
-   ============================================================ */
+/* 生字資料：依圖片「本冊生字」整理，8課、143字。老師要改生字/注音/詞語，改這裡就好。 */
 var DATA=[
 {lesson:1,chars:[
 {c:"軸",z:"ㄓㄡˊ",w:"軸心",p:0},{c:"奪",z:"ㄉㄨㄛˊ",w:"奪取",p:0},
@@ -181,187 +170,170 @@ var DATA=[
 var ALL=[]; DATA.forEach(function(L){L.chars.forEach(function(ch){ALL.push({lesson:L.lesson,c:ch.c,z:ch.z,w:ch.w,p:ch.p});});});
 var CN=["零","一","二","三","四","五","六","七","八"];
 function lessonName(n){return "第"+CN[n]+"課";}
-/* ---------- 工具 ---------- */
+/* 句型：{W} 會換成寫錯的詞語。句型本身不含生字，所以錯字一定在引號的詞裡。 */
+var FRAMES=[
+"小明寫功課的時候，把「{W}」寫錯了一個字。",
+"老師說：「{W}」這個詞裡面，有一個字寫錯了。",
+"媽媽檢查作業，發現「{W}」寫錯了。",
+"考試時，小華把「{W}」寫錯了，扣了一分。",
+"請你仔細看，「{W}」裡面有一個錯字。",
+"小美在作文裡寫了「{W}」，你找得到錯字嗎？",
+"黑板上寫著「{W}」，有一個字不對。",
+"今天的生字功課，要寫「{W}」三次，不可以寫錯。",
+"哥哥念課文，念到「{W}」的時候卡住了，因為有一個字寫錯了。",
+"爸爸問小明：「{W}」這個詞，你會寫嗎？先找出錯字。",
+"小華抄課文，抄到「{W}」的時候抄錯了一個字。",
+"老師在聯絡簿上寫了「{W}」，請你幫忙改過來。"];
 function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
-function pick(arr,n,exclude){var p=shuffle(arr.filter(function(x){return x!==exclude;}));return p.slice(0,n);}
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
-var store={
-  get:function(k,d){try{var v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}},
-  set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
-};
+var store={get:function(k,d){try{var v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}},set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
 function getMissed(){return store.get("sz-missed",[]);}
-function addMissed(key){var m=getMissed();if(m.indexOf(key)<0){m.push(key);store.set("sz-missed",m);}}
-function removeMissed(key){store.set("sz-missed",getMissed().filter(function(x){return x!==key;}));}
+function addMissed(k){var m=getMissed();if(m.indexOf(k)<0){m.push(k);store.set("sz-missed",m);}}
+function removeMissed(k){store.set("sz-missed",getMissed().filter(function(x){return x!==k;}));}
 function getBest(){return store.get("sz-best",{});}
-function saveBest(key,ok,n){var b=getBest();if(!b[key]||ok/n>b[key].ok/b[key].n){b[key]={ok:ok,n:n};store.set("sz-best",b);}}
+function saveBest(k,ok,n){var b=getBest();if(!b[k]||ok/n>b[k].ok/b[k].n){b[k]={ok:ok,n:n};store.set("sz-best",b);}}
 function keyOf(ch){return ch.lesson+"-"+ch.c;}
-function wordBlank(ch){if(!ch.w)return "";var a=ch.w.split("");a[ch.p]="＿";return a.join("");}
-function wordShown(ch){return ch.w?("「"+ch.w+"」"): "—";}
-/* ---------- 出題：每字至少有 注音選字、看字選注音 兩題，有詞語再加詞語填空 ---------- */
-function qZy2Char(ch,pool){
-  var others=pick(pool.map(function(x){return x.c;}),3,ch.c);
-  return {type:"choice",kind:"注音選字",ch:ch,ask:'注音 <span class="zy">'+esc(ch.z)+'</span> 是哪一個字？',
-    options:shuffle([ch.c].concat(others)),answer:ch.c,explain:ch.c+" "+ch.z+" — "+wordShown(ch)};
-}
-function qChar2Zy(ch,pool,allZy){
-  var uniq=function(a){return a.filter(function(v,i){return a.indexOf(v)===i;});};
-  var zys=pick(uniq(pool.map(function(x){return x.z;})),3,ch.z);
-  if(zys.length<3){var extra=pick(uniq(allZy),3,ch.z);zys=uniq(zys.concat(extra)).slice(0,3);}
-  return {type:"choice",kind:"看字選注音",ch:ch,ask:'「<span class="bigchar">'+esc(ch.c)+'</span>」的注音是哪一個？',
-    options:shuffle([ch.z].concat(zys)),answer:ch.z,zy:true,explain:ch.c+" "+ch.z+" — "+wordShown(ch)};
-}
-function qWord(ch,pool){
-  if(!ch.w)return null;
-  var others=pick(pool.map(function(x){return x.c;}),3,ch.c);
-  return {type:"choice",kind:"詞語填空",ch:ch,ask:'「'+esc(wordBlank(ch))+'」裡面，＿ 應該是哪一個字？',
-    options:shuffle([ch.c].concat(others)),answer:ch.c,explain:ch.c+" "+ch.z+" — 「"+ch.w+"」"};
-}
-function qNotIn(lessonChars,allChars,lesson){
-  var inside=pick(lessonChars,3,null).map(function(x){return x.c;});
-  var outsiders=allChars.filter(function(x){return x.lesson!==lesson;});
-  var out=outsiders[Math.floor(Math.random()*outsiders.length)];
-  return {type:"choice",kind:"不是本課生字",ch:out,ask:"下面哪一個字<span style='color:var(--red)'>不是</span>"+lessonName(lesson)+"的生字？",
-    options:shuffle(inside.concat([out.c])),answer:out.c,explain:"「"+out.c+"」是第"+CN[out.lesson]+"課的生字，不是"+lessonName(lesson)+"的。"};
-}
-function questionsFor(chars,lesson){
-  var pool=chars, allZy=ALL.map(function(x){return x.z;});
-  var qs=[];
-  chars.forEach(function(ch){
-    qs.push(qZy2Char(ch,pool));
-    qs.push(qChar2Zy(ch,pool,allZy));
-    var w=qWord(ch,pool); if(w)qs.push(w);
+function wordOf(ch){return ch.w||ch.c;}
+function wrongCandidates(ch,pool){
+  var cands=shuffle(pool.filter(function(x){return x.c!==ch.c;}).map(function(x){return x.c;}));
+  cands.sort(function(a,b){
+    var za=pool.find(function(x){return x.c===a;}).z, zb=pool.find(function(x){return x.c===b;}).z;
+    var sa=za===ch.z?0:(za[0]===ch.z[0]?1:2), sb=zb===ch.z?0:(zb[0]===ch.z[0]?1:2);
+    return sa-sb;
   });
-  for(var i=0;i<5;i++)qs.push(qNotIn(chars,ALL,lesson));
+  return cands;
+}
+function makeQ(ch,pool,frameIdx,wrongChar){
+  var word=wordOf(ch), p=ch.p||0;
+  var ww=word.split(""); ww[p]=wrongChar; ww=ww.join("");
+  var sentence=FRAMES[frameIdx%FRAMES.length].replace("{W}",ww);
+  var start=sentence.indexOf("「")+1, idx=start+p;
+  if(sentence[idx]!==wrongChar){idx=sentence.indexOf(wrongChar);}
+  var others=shuffle(pool.filter(function(x){return x.c!==ch.c&&x.c!==wrongChar;}).map(function(x){return x.c;})).slice(0,2);
+  var explain="「"+ww+"」應改為「"+word+"」。" + ch.c+" "+ch.z+(ch.w?(" — 「"+ch.w+"」"):"");
+  return {ch:ch,wrong:wrongChar,chars:Array.from(sentence),idx:idx,options:shuffle([ch.c,wrongChar].concat(others)),answer:ch.c,explain:explain,sentence:sentence};
+}
+function norm(ch,lesson){return {lesson:lesson,c:ch.c,z:ch.z,w:ch.w,p:ch.p};}
+function twoQs(ch,pool,base){
+  var w=wrongCandidates(ch,pool);
+  return [makeQ(ch,pool,base,w[0]),makeQ(ch,pool,base+7,w[1]||w[0])];
+}
+function questionsForLesson(L){
+  var qs=[]; L.chars.forEach(function(ch,i){qs=qs.concat(twoQs(norm(ch,L.lesson),L.chars,i*2));});
   return shuffle(qs);
 }
-function balancedDeck(chars,lesson,n){
-  /* 輪流取每一個字，保證先把每個字都練到一次，再練第二輪 */
-  var pool=chars.length>=4?chars:ALL;
-  var per={}; chars.forEach(function(ch){
-    var arr=[qZy2Char(ch,pool),qChar2Zy(ch,pool,ALL.map(function(x){return x.z;}))];
-    var w=qWord(ch,pool); if(w)arr.push(w);
-    per[keyOf(ch)]=shuffle(arr);
-  });
-  var order=shuffle(chars.slice()),deck=[],round=0;
+function balancedDeck(chars,n,lesson){
+  var list=chars.map(function(ch){return norm(ch,lesson||ch.lesson);});
+  var per={}; list.forEach(function(ch,i){var pool=lesson?DATA[lesson-1].chars:DATA[ch.lesson-1].chars;per[keyOf(ch)]=twoQs(ch,pool,i*2);});
+  var order=shuffle(list.slice()),deck=[],round=0;
   while(deck.length<n){
     var added=false;
-    order.forEach(function(ch){
-      if(deck.length>=n)return;
-      var a=per[keyOf(ch)]; if(round<a.length){deck.push(a[round]);added=true;}
-    });
+    order.forEach(function(ch){if(deck.length<n){var a=per[keyOf(ch)];if(round<a.length){deck.push(a[round]);added=true;}}});
     if(!added)break; round++;
   }
   return shuffle(deck);
 }
-function typingDeck(chars){
-  var qs=[];
-  chars.forEach(function(ch){
-    qs.push({type:"type",kind:"看注音寫字",ch:ch,ask:'注音 <span class="zy">'+esc(ch.z)+'</span>，請寫出這個字。',answer:ch.c,explain:ch.c+" "+ch.z+" — "+wordShown(ch)});
-    if(ch.w)qs.push({type:"type",kind:"看詞語寫字",ch:ch,ask:'詞語「'+esc(wordBlank(ch))+'」，請寫出 ＿ 的字。',answer:ch.c,explain:ch.c+" "+ch.z+" — 「"+ch.w+"」"});
-  });
-  return shuffle(qs);
-}
-
-/* ---------- 畫面 ---------- */
+function totalQuestions(){var n=0;DATA.forEach(function(L){n+=L.chars.length*2;});return n;}
 var app=document.getElementById("app");
-var S={view:"home",deck:[],i:0,ok:0,results:[],title:"",scope:"",mode:"choice",covered:{}};
-function totalQuestions(){var n=0;DATA.forEach(function(L){n+=questionsFor(L.chars,L.lesson).length;});return n;}
+var S={view:"home",deck:[],i:0,ok:0,results:[],title:"",scope:"",mode:"choice",step:"find",errs:0,solved:false,revealed:false,msg:"",shake:-1,bad:{},curLesson:0,charsN:0};
 function renderHome(){
   var best=getBest(), missed=getMissed().length;
-  var h='<header><span class="badge">本冊生字 · 共 143 字 · 題庫 '+totalQuestions()+' 題</span>'+
-    '<h1>📖 本冊生字大挑戰</h1><p class="sub">先選一課，再選要練多少題。每一個字最少有 2 題：注音選字＋看字選注音。</p></header>';
-  h+='<div class="grid">';
+  var h='<header><span class="badge">本冊生字 · 共 143 字 · 改錯字題庫 '+totalQuestions()+' 題</span>'+
+    '<h1>✏️ 本冊生字改錯字大挑戰</h1><p class="sub">先選一課，再選要練多少題。每一個字最少有 2 題改錯字句：先點出錯字，再用紅筆改正。</p></header>';
+  h+='<div class="grid2">';
   DATA.forEach(function(L){
-    var k="L"+L.lesson, b=best[k];
+    var k="L"+L.lesson,b=best[k];
     var btxt=b?("最佳 "+b.ok+"/"+b.n+(b.ok===b.n?" ★全對":"")):"還沒練過";
     h+='<button class="lesson" data-lesson="'+L.lesson+'"><b>'+lessonName(L.lesson)+'</b>'+
-      '<div class="n">'+L.chars.length+' 個生字 · 題庫 '+questionsFor(L.chars,L.lesson).length+' 題</div>'+
+      '<div class="n">'+L.chars.length+' 個生字 · 改錯字 '+L.chars.length*2+' 題</div>'+
       '<div class="n">'+L.chars.map(function(x){return x.c;}).join(" ")+'</div>'+
       '<div class="best '+(b?"":"empty")+'">'+btxt+'</div></button>';
   });
   h+='</div>';
   h+='<div class="card"><h2>🏆 全冊總複習 / 錯題本</h2><div class="bigrow noprint">'+
-    '<button class="btn green" data-all="full">全冊完整練習</button>'+
+    '<button class="btn green" data-all="full">全冊完整練習（286 題）</button>'+
     '<button class="btn" data-all="40">全冊快速 40 題</button>'+
     '<button class="btn ghost" data-missed>錯題本練習（'+missed+' 字）</button>'+
     '<button class="btn ghost" data-list>📋 看全部生字表</button></div>'+
-    '<p class="muted">全冊完整練習：每課每字都出題，適合考前總複習；快速 40 題會輪流取每課的字，不會一直重複同一字。答錯的字會自動收進錯題本，存在這台裝置的瀏覽器裡。</p></div>';
-  h+='<div class="card noprint"><h2>老師說明</h2><p class="muted">1. 點一課 → 選「完整練習」就是那一課的全部題目，每個字至少 2 題；趕時間就選「快速 20 題」或「快速 40 題」。<br>'+
-  '2. 點生字表裡任何一個字，可以只練那一個字（3 題）。<br>'+
-  '3. 成績和錯題只存在這台裝置，不用登入、不用連網，換一台裝置要重練。<br>'+
+    '<p class="muted">玩法跟改錯字練習一樣：第一步點出句子裡寫錯的那個字，第二步選出正確的字。答錯的字會自動收進錯題本，存在這台裝置的瀏覽器裡。</p></div>';
+  h+='<div class="card noprint"><h2>老師說明</h2><p class="muted">1. 點一課 → 選「完整練習」就是那一課的全部改錯字句，每個字至少 2 題；趕時間就選「快速 20 題」或「快速 40 題」。<br>'+
+  '2. 錯字優先選同音或同課的字，例如「拒」錯成「距」、「寓」錯成「鷸」，學生要真的會寫才改得出來。<br>'+
+  '3. 點生字表裡任何一個字，可以只練那一個字（2 題）。<br>'+
   '4. 生字、注音、詞語都在檔案最前面的 DATA，錯了請直接改那裡，題目會自動跟著改。</p></div>';
   app.innerHTML=h;
 }
 function renderStart(lesson){
+  S.curLesson=lesson;
   var L=DATA[lesson-1], best=getBest()["L"+lesson];
   var h='<div class="card"><p class="muted"><button class="linkbtn" data-home>← 回首頁</button></p>'+
-    '<h2>'+lessonName(lesson)+' — '+L.chars.length+' 個生字</h2>'+
+    '<h2>'+lessonName(lesson)+' 改錯字 — '+L.chars.length+' 個生字</h2>'+
     '<p style="font-size:28px;letter-spacing:4px">'+L.chars.map(function(x){return x.c;}).join(" ")+'</p>'+
     (best?'<p class="muted">最佳成績：'+best.ok+' / '+best.n+'</p>':"")+
     '<h3>要練多少題？</h3><div class="bigrow">'+
-    '<button class="btn green" data-start="full">完整練習（'+questionsFor(L.chars,lesson).length+' 題，每字至少 2 題）</button>'+
+    '<button class="btn green" data-start="full">完整練習（'+L.chars.length*2+' 題，每字至少 2 題）</button>'+
     '<button class="btn" data-start="20">快速 20 題</button>'+
     '<button class="btn" data-start="40">快速 40 題</button></div>'+
-    '<h3>打字練習</h3><div class="bigrow"><button class="btn ghost" data-start="type">看注音寫字（'+typingDeck(L.chars).length+' 題）</button></div>'+
-    '<p class="muted">完整練習題型：注音選字、看字選注音、詞語填空、不是本課生字。快速題會先把每個字輪流練一遍，再練第二輪。</p></div>';
+    '<h3>打字改正</h3><div class="bigrow"><button class="btn ghost" data-start="type">看句子，找出錯字後打字改正</button></div>'+
+    '<p class="muted">每題兩步：① 點出句子裡寫錯的字 ② 選出（或打出）正確的字。兩步都一次答對才算全對。</p></div>';
   app.innerHTML=h;
 }
 function renderList(){
   var h='<div class="card noprint"><p><button class="linkbtn" data-home>← 回首頁</button></p><h2>📋 本冊生字表</h2>'+
-    '<p class="muted">點任何一個字，可以只練那一個字。按「列印」可以印出這張表。</p>'+
+    '<p class="muted">點任何一個字，可以只練那一個字的改錯字（2 題）。按「列印」可以印出這張表。</p>'+
     '<div class="bigrow"><button class="btn ghost" onclick="window.print()">🖨 列印生字表</button></div></div>';
   DATA.forEach(function(L){
     h+='<div class="card"><h3>'+lessonName(L.lesson)+'（'+L.chars.length+' 字）</h3><div class="ztable">'+
       L.chars.map(function(ch){
-        return '<button class="zcell" data-char="'+lessonName(L.lesson)+'" data-c="'+esc(ch.c)+'"><div class="c">'+esc(ch.c)+'</div><div class="z">'+esc(ch.z)+'</div><div class="w">'+esc(ch.w||"")+'</div></button>';
+        return '<button class="zcell" data-char="'+esc(ch.c)+'"><div class="c">'+esc(ch.c)+'</div><div class="z">'+esc(ch.z)+'</div><div class="w">'+esc(ch.w||"")+'</div></button>';
       }).join("")+'</div></div>';
   });
   app.innerHTML=h;
 }
-function startQuiz(deck,title,scope){
-  S={view:"quiz",deck:deck,i:0,ok:0,results:[],title:title,scope:scope,mode:"choice",covered:{},answered:false,lastOk:false};
+function startQuiz(deck,title,scope,mode){
+  S={view:"quiz",deck:deck,i:0,ok:0,results:[],title:title,scope:scope,mode:mode||"choice",step:"find",errs:0,solved:false,revealed:false,msg:"",shake:-1,bad:{},curLesson:S.curLesson,charsN:S.charsN};
   renderQuiz();
 }
+function resetQ(){S.step="find";S.errs=0;S.solved=false;S.revealed=false;S.msg="";S.shake=-1;S.bad={};}
 function renderQuiz(){
   var q=S.deck[S.i], total=S.deck.length;
-  var coveredN=Object.keys(S.covered).length;
-  var totalChars=S.scope==="all"?143:(S.scope==="missed"?getMissed().length:(S.charsN||total));
-  var h='<div class="card"><div class="qhead"><span>'+esc(S.title)+'</span><span>第 '+(S.i+1)+' / '+total+' 題 · 答對 '+S.ok+' 題</span></div>'+
-    '<div class="prog"><i style="width:'+Math.round(S.i/total*100)+'%"></i></div>'+
-    '<p class="muted">已練到 '+coveredN+' 個不同的字 · 本題型：'+q.kind+'</p>'+
-    '<p class="q">'+q.ask+'</p>';
-  if(q.type==="choice"){
-    h+='<div class="opts">'+q.options.map(function(o,i){
-      var cls=q.zy?"opt zy":"opt";
-      return '<button class="'+cls+'" data-opt="'+esc(o)+'" data-i="'+i+'">'+esc(o)+'</button>';
-    }).join("")+'</div><p class="hint">也可以按鍵盤 1–4 選答案。</p>';
+  var h='<div class="card"><div class="stats"><span>'+esc(S.title)+'</span><span>第 <b>'+(S.i+1)+'</b> / '+total+' 題 · 一次答對 <b>'+S.ok+'</b> 題</span></div>'+
+    '<div class="prog">'+S.deck.map(function(_,k){var c=k<S.results.length?(S.results[k].ok?"ok":"miss"):(k===S.i?"cur":"");return '<i class="'+c+'"></i>';}).join("")+'</div>'+
+    '<div class="steps" style="margin-top:12px"><span class="step '+(S.step==="find"?"on":"done")+'">1　找錯字</span><span class="step '+(S.solved?"done":(S.step==="fix"?"on":""))+'">2　改正</span></div>';
+  var PUNCT=/[\p{P}\s]/u;
+  h+='<div class="grid" style="margin-top:14px">'+q.chars.map(function(ch,i){
+    if(PUNCT.test(ch))return '<span class="cell punct">'+esc(ch)+'</span>';
+    if(i===q.idx&&S.solved)return '<span class="cell fixed"><span class="new">'+esc(q.answer)+'</span><span class="old">'+esc(q.wrong)+'</span></span>';
+    var cls="cell"; if(i===q.idx&&S.step==="fix")cls+=" circled"; if(S.shake===i)cls+=" nope";
+    return '<button type="button" class="'+cls+'" data-i="'+i+'"'+(S.step!=="find"?" disabled":"")+'>'+esc(ch)+'</button>';
+  }).join("")+'</div>';
+  if(S.solved){
+    var perfect=S.results[S.results.length-1].ok, last=S.i>=S.deck.length-1;
+    h+='<div class="fb '+(perfect?"good":"fix")+'"><h2>'+(perfect?"答對了！":(S.revealed?"正確答案在這裡":"改正完成"))+'</h2>'+
+      '<p class="chg"><del>'+esc(q.wrong)+'</del> → <ins>'+esc(q.answer)+'</ins></p><p>'+esc(q.explain)+'</p></div>'+
+      '<div class="bigrow" style="margin-top:12px"><button class="btn green" data-next>'+(last?"看成績":"下一題")+'</button></div>';
+  }else if(S.step==="find"){
+    h+='<p class="prompt"><b>點出錯字</b>點一下句子裡你覺得寫錯的那個字。</p><p class="msg">'+S.msg+'</p>'+
+      '<div class="bigrow">'+(S.errs>=2?'<button class="linkbtn" data-reveal>直接看答案</button>':"")+'</div>';
   }else{
-    h+='<form class="typein" data-form><input id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="寫一個字" maxlength="2">'+
-      '<button class="btn" type="submit">確定</button></form><p class="hint">用裝置的注音鍵盤打出這個字，再按確定。</p>';
+    h+='<p class="prompt"><b>改正</b>「'+esc(q.wrong)+'」要改成哪一個字？</p>';
+    if(S.mode==="type"){
+      h+='<form class="typerow" data-form><label for="ans">輸入正確的字</label><input id="ans" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="2"><button type="submit" class="btn">確定</button></form>';
+    }else{
+      h+='<div class="opts">'+q.options.map(function(ch){var bad=S.bad[ch];return '<button type="button" class="opt'+(bad?" bad":"")+'" data-ch="'+esc(ch)+'"'+(bad?" disabled":"")+'>'+esc(ch)+'</button>';}).join("")+'</div>';
+    }
+    h+='<p class="msg">'+S.msg+'</p>';
+    if(S.errs>=2)h+='<div class="bigrow"><button class="linkbtn" data-reveal>直接看答案</button></div>';
   }
-  h+='<div id="fb"></div>';
   h+='<div class="bigrow" style="margin-top:12px"><button class="btn ghost" data-quit>結束，回首頁</button></div></div>';
   app.innerHTML=h;
   var inp=document.getElementById("ans"); if(inp)inp.focus();
 }
-function answer(value){
-  if(S.answered)return;
-  var q=S.deck[S.i]; S.answered=true;
-  S.covered[keyOf(q.ch)]=true;
-  var ok=value===q.answer;
-  if(ok){S.ok++;removeMissed(keyOf(q.ch));}else{addMissed(keyOf(q.ch));}
-  S.results.push({q:q,ok:ok,given:value});
-  var fb=document.getElementById("fb");
-  fb.innerHTML='<div class="fb '+(ok?"good":"bad")+'"><div class="ans">'+(ok?"⭕ 答對了！":"❌ 答錯了，正確答案是「"+esc(q.answer)+"」")+'</div><div>'+esc(q.explain)+'</div></div>'+
-    '<div class="bigrow" style="margin-top:12px"><button class="btn green" data-next>'+(S.i>=S.deck.length-1?"看成績":"下一題 →")+'</button></div>';
-  if(q.type==="choice"){
-    document.querySelectorAll("[data-opt]").forEach(function(b){
-      b.disabled=true;
-      if(b.getAttribute("data-opt")===q.answer)b.classList.add("correct");
-      else if(b.getAttribute("data-opt")===value)b.classList.add("wrong");
-    });
-  }
-  var nx=document.querySelector("[data-next]"); if(nx)nx.focus();
+function finish(ok){
+  var q=S.deck[S.i];
+  S.solved=true;S.step="fix";S.msg="";
+  S.results.push({q:q,ok:ok});
+  if(ok)removeMissed(keyOf(q.ch));else addMissed(keyOf(q.ch));
+  renderQuiz();
 }
 function renderResult(){
   var total=S.deck.length, ok=S.ok, pct=total?Math.round(ok/total*100):0;
@@ -371,80 +343,87 @@ function renderResult(){
     '<p class="score">'+ok+' <span style="font-size:28px;color:var(--muted)">/ '+total+'</span></p>'+
     '<p style="font-size:22px">'+stars+'　答對率 '+pct+'%</p>'+
     '<p>'+(pct>=90?"幾乎全對，太厲害了！":pct>=70?"不錯，把下面錯的再看一遍。":"別灰心，錯的字已經收進錯題本，再練一次就會了。")+'</p>'+
-    '<div class="bigrow"><button class="btn green" data-again>再練一次</button>'+
-    (wrong.length?'<button class="btn" data-missed>練錯題（'+wrong.length+' 題）</button>':"")+
-    '<button class="btn ghost" data-home>回首頁</button></div></div>';
+    '<div class="bigrow"><button class="btn green" data-home>回首頁</button>'+
+    (wrong.length?'<button class="btn" data-missed>練錯題（'+wrong.length+' 題）</button>':"")+'</div></div>';
   if(wrong.length){
     h+='<div class="card"><h2>錯題複習</h2><ul class="review">'+wrong.map(function(r){
-      return '<li><b>'+esc(r.q.kind)+'</b>：'+r.q.ask+'<br>你選了「'+esc(r.given||"（沒寫）")+'」，正確是「'+esc(r.q.answer)+'」。'+esc(r.q.explain)+'</li>';
+      return '<li>'+esc(r.q.sentence)+'<br>錯字「'+esc(r.q.wrong)+'」應改為「'+esc(r.q.answer)+'」。'+esc(r.q.explain)+'</li>';
     }).join("")+'</ul></div>';
   }
   app.innerHTML=h;
 }
-/* ---------- 事件 ---------- */
 app.addEventListener("click",function(e){
   var t=e.target.closest("button"); if(!t)return;
   if(t.hasAttribute("data-home")){renderHome();return;}
   if(t.hasAttribute("data-list")){renderList();return;}
   if(t.hasAttribute("data-lesson")){renderStart(Number(t.getAttribute("data-lesson")));return;}
   if(t.hasAttribute("data-char")){
-    var c=t.getAttribute("data-c");
+    var c=t.getAttribute("data-char");
     var ch=ALL.find(function(x){return x.c===c;});
-    if(!ch)return;
-    var qs=[qZy2Char(ch,DATA[ch.lesson-1].chars),qChar2Zy(ch,DATA[ch.lesson-1].chars,ALL.map(function(x){return x.z;}))];
-    var w=qWord(ch,DATA[ch.lesson-1].chars); if(w)qs.push(w);
-    S.charsN=1; startQuiz(shuffle(qs),"只練「"+c+"」","single"); return;
+    if(ch){S.charsN=1;startQuiz(shuffle(twoQs(ch,DATA[ch.lesson-1].chars,0)),"只練「"+c+"」的改錯字","single","choice");}
+    return;
   }
   if(t.hasAttribute("data-start")){
-    var lesson=Number((document.querySelector("[data-start]")||{}).getAttribute("data-lesson")||0);
-    /* 從 renderStart 的按鈕取課別：用目前標題反推較不可靠，改用全域暫存 */
-    lesson=S.curLesson||lesson;
-    var L=DATA[lesson-1]; S.charsN=L.chars.length;
+    var lesson=S.curLesson, L=DATA[lesson-1]; S.charsN=L.chars.length;
     var mode=t.getAttribute("data-start");
-    if(mode==="type"){startQuiz(typingDeck(L.chars),lessonName(lesson)+" 打字練習","L"+lesson);}
-    else if(mode==="full"){startQuiz(questionsFor(L.chars,lesson),lessonName(lesson)+" 完整練習","L"+lesson);}
-    else{startQuiz(balancedDeck(L.chars,lesson,Number(mode)),lessonName(lesson)+" 快速 "+mode+" 題","L"+lesson);}
+    if(mode==="type")startQuiz(questionsForLesson(L),lessonName(lesson)+" 打字改正","L"+lesson,"type");
+    else if(mode==="full")startQuiz(questionsForLesson(L),lessonName(lesson)+" 完整練習","L"+lesson,"choice");
+    else startQuiz(balancedDeck(L.chars,Number(mode),lesson),lessonName(lesson)+" 快速 "+mode+" 題","L"+lesson,"choice");
     return;
   }
   if(t.hasAttribute("data-all")){
-    var m=t.getAttribute("data-all");
-    S.charsN=143;
-    if(m==="full"){var d=[];DATA.forEach(function(L){d=d.concat(questionsFor(L.chars,L.lesson));});startQuiz(shuffle(d),"全冊完整練習","all");}
-    else{startQuiz(balancedDeck(ALL,0,40),"全冊快速 40 題","all");}
+    var m=t.getAttribute("data-all"); S.charsN=143;
+    if(m==="full"){var d=[];DATA.forEach(function(L){d=d.concat(questionsForLesson(L));});startQuiz(shuffle(d),"全冊完整練習","all","choice");}
+    else startQuiz(balancedDeck(ALL,40),"全冊快速 40 題","all","choice");
     return;
   }
   if(t.hasAttribute("data-missed")){
     var missed=getMissed().map(function(k){return ALL.find(function(x){return keyOf(x)===k;});}).filter(Boolean);
     if(!missed.length){alert("錯題本是空的，先去練一課吧！");return;}
     S.charsN=missed.length;
-    startQuiz(balancedDeck(missed,missed[0].lesson,Math.min(40,missed.length*2)),"錯題本練習","missed");
+    startQuiz(balancedDeck(missed,Math.min(40,missed.length*2)),"錯題本練習","missed","choice");
     return;
   }
-  if(t.hasAttribute("data-opt")&&!S.answered){answer(t.getAttribute("data-opt"));return;}
+  if(S.view!=="quiz")return;
+  var q=S.deck[S.i];
+  if(t.hasAttribute("data-i")&&S.step==="find"){
+    var i=Number(t.getAttribute("data-i"));
+    if(i===q.idx){S.step="fix";S.msg="";S.shake=-1;renderQuiz();}
+    else{S.errs++;S.msg="「"+q.chars[i]+"」沒有錯，再找找看。";S.shake=i;renderQuiz();}
+    return;
+  }
+  if(t.hasAttribute("data-reveal")){S.revealed=true;finish(false);return;}
+  if(t.hasAttribute("data-ch")&&S.step==="fix"&&!S.solved){
+    var ch=t.getAttribute("data-ch");
+    if(ch===q.answer)finish(S.errs===0);
+    else{S.bad[ch]=true;S.errs++;S.msg="不是「"+ch+"」，再想想。";renderQuiz();}
+    return;
+  }
   if(t.hasAttribute("data-next")){
     if(S.i>=S.deck.length-1){saveBest(S.scope,S.ok,S.deck.length);S.view="result";renderResult();}
-    else{S.i++;S.answered=false;renderQuiz();}
+    else{S.i++;resetQ();renderQuiz();}
     return;
   }
   if(t.hasAttribute("data-quit")){if(confirm("要結束這次練習嗎？"))renderHome();return;}
-  if(t.hasAttribute("data-again")){renderHome();return;}
 });
-/* renderStart 需記住目前課別 */
-var _renderStart=renderStart;
-renderStart=function(lesson){S.curLesson=lesson;_renderStart(lesson);};
 app.addEventListener("submit",function(e){
   if(!e.target.hasAttribute("data-form"))return;
   e.preventDefault();
+  var q=S.deck[S.i]; if(!q||S.solved)return;
   var v=document.getElementById("ans").value.trim();
-  if(!v){alert("請先寫一個字。");return;}
-  answer(v.slice(0,1));
+  if(!v){S.msg="請先輸入一個字。";renderQuiz();return;}
+  if(v.length>1){S.msg="只要輸入一個字喔。";renderQuiz();return;}
+  if(v[0]===q.answer)finish(S.errs===0);
+  else{S.errs++;S.msg="不是「"+v[0]+"」，再想想。";renderQuiz();}
 });
 document.addEventListener("keydown",function(e){
-  if(S.view!=="quiz"||S.answered)return;
-  var q=S.deck[S.i]; if(!q||q.type!=="choice")return;
-  var n=parseInt(e.key,10);
-  if(n>=1&&n<=q.options.length){answer(q.options[n-1]);}
-  if(e.key==="Enter"){var nx=document.querySelector("[data-next]");if(nx)nx.click();}
+  if(S.view!=="quiz"||S.solved||S.step!=="fix"||S.mode!=="choice")return;
+  var q=S.deck[S.i]; var n=parseInt(e.key,10);
+  if(n>=1&&n<=q.options.length){
+    var ch=q.options[n-1];
+    if(ch===q.answer)finish(S.errs===0);
+    else{S.bad[ch]=true;S.errs++;S.msg="不是「"+ch+"」，再想想。";renderQuiz();}
+  }
 });
 renderHome();
 </script>
