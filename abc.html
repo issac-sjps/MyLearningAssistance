@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#245db5">
+<title>ABC 英文大小寫書寫闖關</title>
+<style>
+:root{
+  font-family:system-ui,-apple-system,"Segoe UI","Microsoft JhengHei",sans-serif;
+  color:#243247;background:#f3f6fb;
+  --blue:#245db5; --blue2:#3185d8; --orange:#d97706; --green:#15945b; --red:#c2410c;
+  --line:#dce4ef; --muted:#65758b;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;overscroll-behavior:none}
+.app{
+  height:100dvh;display:flex;flex-direction:column;gap:8px;
+  padding:calc(8px + env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left));
+  max-width:1200px;margin:0 auto;
+}
+header{display:flex;align-items:center;gap:12px;flex:none}
+header h1{font-size:clamp(18px,3.2vmin,26px);margin:0;color:#1e477d;white-space:nowrap}
+.progresswrap{flex:1;display:flex;align-items:center;gap:10px;min-width:0}
+.progressnum{font-size:clamp(15px,2.6vmin,20px);font-weight:800;white-space:nowrap;color:var(--blue)}
+.bar{height:12px;background:#e8eef6;border-radius:99px;overflow:hidden;flex:1}
+.bar>div{height:100%;width:0;background:var(--blue2);transition:width .25s}
+.muted{color:var(--muted);font-size:13px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 3px 12px #193b6412}
+#game{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px}
+.promptpanel{flex:none;text-align:center;padding:6px 10px 8px}
+.direction{font-weight:700;color:var(--muted);font-size:clamp(14px,2.6vmin,18px)}
+.promptrow{display:flex;justify-content:center;align-items:center;gap:clamp(12px,4vw,34px)}
+.bigletter{font-size:clamp(52px,13vmin,96px);font-weight:850;line-height:1.05;color:var(--blue)}
+.answerletter{color:var(--orange)}
+.arrow{font-size:clamp(20px,4vmin,30px);color:#9aa8ba}
+.hint{color:#8a6d1f;background:#fff8e1;border:1px dashed #e5c15c;border-radius:99px;display:inline-block;padding:3px 12px;font-size:clamp(12px,2.4vmin,15px);font-weight:700;margin-top:2px}
+.writepanel{flex:1;min-height:0;display:flex;flex-direction:column;padding:8px 10px 10px}
+.writehead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px;flex:none}
+.writehead strong{font-size:clamp(14px,2.6vmin,17px)}
+.pill{display:inline-block;background:#edf2f8;border-radius:99px;padding:4px 11px;font-size:12px;font-weight:700;color:#40536e}
+.guide{position:relative;flex:1;min-height:140px;border:1px solid #cbd5e1;border-radius:10px;overflow:hidden;background:#fff;touch-action:none}
+canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair;display:block}
+.linelabel{position:absolute;left:6px;transform:translateY(-50%);font-size:11px;font-weight:800;color:#c0504d;background:#ffffffcc;padding:0 4px;border-radius:4px;pointer-events:none;z-index:2}
+.linelabel.mid{color:#b7791f}.linelabel.base{color:#245db5}.linelabel.desc{color:#7c5cd6}
+.actions{display:flex;gap:8px;margin-top:8px;flex:none}
+button{border:0;border-radius:10px;padding:12px 14px;font-size:clamp(14px,2.6vmin,16px);font-weight:750;cursor:pointer;touch-action:manipulation}
+button:disabled{opacity:.45;cursor:not-allowed}
+.primary{background:var(--blue);color:#fff;flex:1.4}
+.secondary{background:#fff;color:#30435e;border:1px solid #cbd5e1;flex:1}
+.full{width:100%;margin-top:8px;flex:none}
+.feedback{text-align:center;font-weight:750;min-height:22px;margin-top:7px;font-size:clamp(13px,2.6vmin,16px);flex:none}
+.feedback .why{display:block;font-weight:600;font-size:.88em;margin-top:2px}
+/* 橫向 iPad：左題目、右書寫，一頁完成 */
+@media (orientation:landscape) and (min-width:700px){
+  #game{flex-direction:row}
+  .promptpanel{flex:0 0 30%;display:flex;flex-direction:column;justify-content:center}
+  .promptrow{flex-direction:column;gap:2px}
+  .arrow{transform:rotate(90deg)}
+  .writepanel{flex:1}
+}
+#result{flex:1;min-height:0;overflow-y:auto;text-align:center;padding:16px}
+.trophy{font-size:clamp(56px,12vmin,84px);line-height:1.1}
+.trophy.gold{animation:pop .6s ease}
+@keyframes pop{0%{transform:scale(.4)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+.score{font-size:clamp(40px,9vmin,58px);font-weight:850;color:var(--blue);margin:6px}
+.row{display:flex;gap:12px;align-items:center;padding:10px 4px;border-bottom:1px solid #e5eaf1;text-align:left}
+.row img{width:110px;height:74px;object-fit:contain;border:1px solid var(--line);border-radius:8px;background:#fff;flex:none}
+.row .meta{flex:1;min-width:0}
+footer{flex:none;text-align:center}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>ABC 英文大小寫書寫闖關</h1>
+    <div class="progresswrap" aria-label="測驗進度">
+      <div class="progressnum" id="progress">第 1 / 30 題</div>
+      <div class="bar"><div id="bar"></div></div>
+    </div>
+    <button class="secondary" id="reshuffle" style="flex:none;padding:8px 12px">🔄 重新出題</button>
+  </header>
+
+  <section id="game">
+    <section class="panel promptpanel">
+      <div class="direction" id="direction">請寫出對應的英文字母</div>
+      <div class="promptrow">
+        <div><div class="muted">題目</div><div class="bigletter" id="prompt">A</div></div>
+        <div class="arrow">→</div>
+        <div><div class="muted">請寫</div><div class="bigletter answerletter" id="answer">?</div></div>
+      </div>
+      <div><span class="hint" id="hint">請在書寫格中寫字</span></div>
+    </section>
+
+    <section class="panel writepanel">
+      <div class="writehead">
+        <strong>✏️ 書寫練習區</strong>
+        <span class="pill">上線・中線・下線・下伸線</span>
+      </div>
+      <div class="guide" id="guide">
+        <span class="linelabel" data-line="top">上線</span>
+        <span class="linelabel mid" data-line="mid">中線</span>
+        <span class="linelabel base" data-line="base">下線</span>
+        <span class="linelabel desc" data-line="desc">下伸線</span>
+        <canvas id="canvas"></canvas>
+      </div>
+      <div class="actions">
+        <button class="secondary" id="clear">清除重寫</button>
+        <button class="secondary" id="undo">復原一筆</button>
+        <button class="primary" id="check">確認答案 ✓</button>
+      </div>
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+      <button class="primary full" id="next" hidden>下一題 →</button>
+    </section>
+  </section>
+
+  <section class="panel" id="result" hidden>
+    <div class="trophy" id="trophy">📝</div>
+    <h2 id="resultTitle" style="margin:4px 0">測驗完成！</h2>
+    <div class="muted">本次練習成績</div>
+    <div class="score" id="score">0 / 30</div>
+    <div id="message" style="font-weight:750"></div>
+    <p id="passText" style="color:#b98200;font-weight:700"></p>
+    <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:12px">
+      <span class="pill">答對 <b id="correct">0</b> 題</span>
+      <span class="pill">答錯 <b id="wrong">0</b> 題</span>
+    </div>
+    <button class="secondary full" id="review">查看答錯題目</button>
+    <div id="errors" hidden></div>
+    <button class="primary full" id="restart">🔄 再練習一次（重新出題）</button>
+  </section>
+
+  <footer class="muted">看大寫寫小寫、看小寫寫大寫・每次隨機 30 題・練習不限次數</footer>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  // 書寫線位置（佔書寫區高度的比例）：上線 / 中線 / 下線(基線) / 下伸線
+  const LINE = { top: 0.08, mid: 0.38, base: 0.68, desc: 0.95 };
+
+  // 小寫字母分類
+  const ASCENDER = new Set("bdfhkl");   // 要碰到上線：b d f h k l
+  const DESCENDER = new Set("gjpqy");   // 要往下伸：g j p q y
+  // t 比較特別：比中線高、不到上線也可以
+  // 其餘 a c e i m n o r s u v w x z：只要中線到下線
+
+  let questions = [], index = 0, results = [], strokes = [], locked = false;
+  let activePointer = null, currentStroke = null;
+  let lastW = 0, lastH = 0;
+
+  const canvas = $("canvas"), ctx = canvas.getContext("2d"), guide = $("guide");
+
+  // ---------- 出題：大寫→小寫 15 題 + 小寫→大寫 15 題，隨機排列 ----------
+  function makeQuestions() {
+    const qs = [];
+    for (let i = 0; i < 15; i++) qs.push({ letter: alphabet[Math.floor(Math.random() * 26)], askUpper: true });
+    for (let i = 0; i < 15; i++) qs.push({ letter: alphabet[Math.floor(Math.random() * 26)], askUpper: false });
+    // askUpper=true：題目是大寫，要寫小寫；false：題目是小寫，要寫大寫
+    for (let i = qs.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [qs[i], qs[j]] = [qs[j], qs[i]];
+    }
+    // 避免連續兩題同一個字母
+    for (let i = 1; i < qs.length; i++) {
+      if (qs[i].letter === qs[i - 1].letter) {
+        const j = (i + 7) % qs.length;
+        [qs[i], qs[j]] = [qs[j], qs[i]];
+      }
+    }
+    return qs;
+  }
+
+  function answerOf(q) { return q.askUpper ? q.letter.toLowerCase() : q.letter; }
+
+  function hintOf(q) {
+    const ans = answerOf(q);
+    if (!q.askUpper) return "大寫 " + ans + "：要碰到上線和下線";
+    const l = ans;
+    if (ASCENDER.has(l)) return "小寫 " + l + "：要碰到上線和下線";
+    if (DESCENDER.has(l)) return "小寫 " + l + "：從中線寫到下伸線，要往下伸";
+    if (l === "t") return "小寫 t：要比中線高一點，寫到下線";
+    return "小寫 " + l + "：只要寫在中線和下線之間";
+  }
+
+  // JUDGE_START
+  // 判斷筆跡位置是否符合該字母應該碰到的線。
+  // strokes：筆畫陣列（每筆是 {x,y} 陣列，CSS 像素座標）；H：書寫區高度；answer：正確答案字母（大小寫已定）
+  function judgeWriting(strokes, H, answer) {
+    const topY = LINE.top * H, midY = LINE.mid * H, baseY = LINE.base * H, descY = LINE.desc * H;
+    const S = midY - topY;              // 一格的高度
+    const tol = 0.34 * S;               // 碰線容許誤差
+    const reasons = [];
+
+    // i、j 的點是獨立一小筆且在中線上面，判斷高度時不算那個點
+    const isLower = answer === answer.toLowerCase();
+    let bodyStrokes = strokes;
+    if (isLower && (answer === "i" || answer === "j")) {
+      const filtered = strokes.filter(st => {
+        if (!st.length) return false;
+        const ys = st.map(p => p.y);
+        const h = Math.max(...ys) - Math.min(...ys);
+        const aboveMid = Math.max(...ys) < midY - 0.05 * S;
+        return !(aboveMid && h < 0.55 * S);   // 點：位置在中線上方、而且很短
+      });
+      if (filtered.length) bodyStrokes = filtered;
+    }
+
+    const pts = bodyStrokes.flat();
+    if (pts.length < 6) return { ok: false, reasons: ["請先在格子內寫出字母喔！"] };
+    const minY = Math.min(...pts.map(p => p.y));
+    const maxY = Math.max(...pts.map(p => p.y));
+
+    const reachTop = minY <= topY + tol;
+    const reachMid = minY <= midY + tol;
+    const tooTall = minY < midY - 0.55 * S;
+    const reachBase = maxY >= baseY - tol;
+    const tooLow = maxY > baseY + 0.45 * (descY - baseY);
+    const reachDesc = maxY >= baseY + 0.45 * (descY - baseY);
+
+    if (!isLower || ASCENDER.has(answer)) {
+      // 大寫 A–Z、小寫 b d f h k l：上線 + 下線
+      if (!reachTop) reasons.push("上面還沒碰到上線喔");
+      if (!reachBase) reasons.push("下面還沒碰到下線喔");
+    } else if (DESCENDER.has(answer)) {
+      // 小寫 g j p q y：中線起筆、往下伸到下伸線方向
+      if (!reachMid) reasons.push("上面還沒碰到中線喔");
+      if (tooTall) reasons.push("寫太高了，這個字母從中線開始寫");
+      if (!reachDesc) reasons.push("這個字母要往下伸，寫到下線下面喔");
+    } else if (answer === "t") {
+      if (minY > midY - 0.22 * S) reasons.push("t 要寫得比中線高一點喔");
+      if (!reachBase) reasons.push("下面還沒碰到下線喔");
+      if (tooLow) reasons.push("寫太下面了，要停在下線喔");
+    } else {
+      // 其餘小寫：中線 + 下線，不可太高、不可下伸
+      if (!reachMid) reasons.push("上面還沒碰到中線喔");
+      if (tooTall) reasons.push("寫太高了，這個小寫字母只要到中線");
+      if (!reachBase) reasons.push("下面還沒碰到下線喔");
+      if (tooLow) reasons.push("寫太下面了，要停在下線喔");
+    }
+    return { ok: reasons.length === 0, reasons };
+  }
+  // JUDGE_END
+
+  // ---------- 畫布 ----------
+  function positionLabels() {
+    document.querySelectorAll(".linelabel").forEach(el => {
+      el.style.top = (LINE[el.dataset.line] * 100) + "%";
+    });
+  }
+
+  function resizeCanvas() {
+    const rect = guide.getBoundingClientRect();
+    const w = Math.max(1, Math.round(rect.width)), h = Math.max(1, Math.round(rect.height));
+    if (lastW && lastH && (w !== lastW || h !== lastH)) {
+      const sx = w / lastW, sy = h / lastH;
+      strokes.forEach(st => st.forEach(p => { p.x *= sx; p.y *= sy; }));
+    }
+    lastW = w; lastH = h;
+    const ratio = window.devicePixelRatio || 1;
+    canvas.width = Math.round(w * ratio);
+    canvas.height = Math.round(h * ratio);
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    positionLabels();
+    redraw();
+  }
+
+  function redraw() {
+    const w = lastW, h = lastH;
+    if (!w || !h) return;
+    ctx.clearRect(0, 0, w, h);
+    // 淺色直線，形成方格
+    const cell = (LINE.mid - LINE.top) * h;
+    ctx.strokeStyle = "#eef2f7"; ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let x = cell; x < w; x += cell) { ctx.moveTo(x, 0); ctx.lineTo(x, h); }
+    ctx.stroke();
+    // 四條基準線
+    const lines = [
+      [LINE.top, "#df7373"], [LINE.mid, "#e3a008"], [LINE.base, "#7aa7e0"], [LINE.desc, "#b79ced"]
+    ];
+    lines.forEach(([r, color]) => {
+      ctx.strokeStyle = color; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(0, r * h); ctx.lineTo(w, r * h); ctx.stroke();
+    });
+    // 筆跡
+    ctx.strokeStyle = "#245db5"; ctx.lineWidth = Math.max(4, h * 0.016);
+    ctx.lineCap = "round"; ctx.lineJoin = "round";
+    strokes.forEach(st => {
+      if (!st.length) return;
+      ctx.beginPath(); ctx.moveTo(st[0].x, st[0].y);
+      st.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
+      if (st.length === 1) ctx.lineTo(st[0].x + .1, st[0].y + .1);
+      ctx.stroke();
+    });
+  }
+
+  function pointFromEvent(e) {
+    const rect = canvas.getBoundingClientRect();
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  }
+
+  canvas.addEventListener("pointerdown", e => {
+    if (locked || activePointer !== null) return;
+    e.preventDefault();
+    try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+    activePointer = e.pointerId;
+    currentStroke = [pointFromEvent(e)];
+    strokes.push(currentStroke);
+    redraw();
+  });
+  canvas.addEventListener("pointermove", e => {
+    if (locked || e.pointerId !== activePointer || !currentStroke) return;
+    e.preventDefault();
+    const evts = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+    evts.forEach(ev => currentStroke.push(pointFromEvent(ev)));
+    redraw();
+  });
+  function endStroke(e) {
+    if (e.pointerId !== activePointer) return;
+    activePointer = null; currentStroke = null;
+  }
+  canvas.addEventListener("pointerup", endStroke);
+  canvas.addEventListener("pointercancel", endStroke);
+  canvas.addEventListener("contextmenu", e => e.preventDefault());
+
+  function snapshot() {
+    try {
+      const off = document.createElement("canvas");
+      const scale = 220 / Math.max(1, lastW);
+      off.width = 220; off.height = Math.round(lastH * scale);
+      const octx = off.getContext("2d");
+      octx.fillStyle = "#fff"; octx.fillRect(0, 0, off.width, off.height);
+      octx.drawImage(canvas, 0, 0, off.width, off.height);
+      return off.toDataURL("image/png");
+    } catch (_) { return ""; }
+  }
+
+  // ---------- 流程 ----------
+  function clearWriting() {
+    strokes = []; currentStroke = null; activePointer = null; redraw();
+    $("feedback").textContent = ""; $("answer").textContent = "?";
+  }
+
+  function showQuestion() {
+    locked = false; clearWriting();
+    const q = questions[index];
+    $("prompt").textContent = q.askUpper ? q.letter : q.letter.toLowerCase();
+    $("direction").textContent = q.askUpper ? "看到大寫，請寫出對應的小寫字母" : "看到小寫，請寫出對應的大寫字母";
+    $("hint").textContent = hintOf(q);
+    $("progress").textContent = "第 " + (index + 1) + " / 30 題";
+    $("bar").style.width = (index / 30 * 100) + "%";
+    $("check").disabled = false; $("clear").disabled = false; $("undo").disabled = false;
+    $("next").hidden = true;
+  }
+
+  function start() {
+    questions = makeQuestions(); index = 0; results = [];
+    $("game").hidden = false; $("result").hidden = true;
+    showQuestion();
+  }
+
+  function checkAnswer() {
+    if (locked) return;
+    const q = questions[index];
+    const expected = answerOf(q);
+    const verdict = judgeWriting(strokes, lastH, expected);
+    if (!verdict.ok && verdict.reasons[0] === "請先在格子內寫出字母喔！") {
+      $("feedback").innerHTML = "✏️ 請先在格子內寫出字母喔！";
+      $("feedback").style.color = "#b7791f";
+      return;
+    }
+    results.push({ q, correct: verdict.ok, expected, reasons: verdict.reasons, img: snapshot() });
+    locked = true;
+    $("answer").textContent = expected;
+    if (verdict.ok) {
+      $("feedback").innerHTML = "✓ 太棒了！書寫位置正確！";
+      $("feedback").style.color = "var(--green)";
+    } else {
+      $("feedback").innerHTML = "再加油！正確答案是「" + expected + "」<span class='why'>" + verdict.reasons.join("；") + "</span>";
+      $("feedback").style.color = "var(--red)";
+    }
+    $("check").disabled = true; $("clear").disabled = true; $("undo").disabled = true;
+    $("next").hidden = false;
+    $("next").textContent = index === 29 ? "查看測驗結果 →" : "下一題 →";
+    $("bar").style.width = ((index + 1) / 30 * 100) + "%";
+  }
+
+  function finish() {
+    $("game").hidden = true; $("result").hidden = false;
+    const correctCount = results.filter(r => r.correct).length, wrongCount = 30 - correctCount;
+    $("progress").textContent = "30 / 30"; $("bar").style.width = "100%";
+    $("score").textContent = correctCount + " / 30";
+    $("correct").textContent = correctCount; $("wrong").textContent = wrongCount;
+    const allRight = wrongCount === 0;
+    $("trophy").textContent = allRight ? "🌟" : "📝";
+    $("trophy").classList.toggle("gold", allRight);
+    $("resultTitle").textContent = allRight ? "恭喜過關！" : "測驗完成！";
+    $("message").textContent = allRight ? "太厲害了！30 題全部答對！" : "這一次答對 " + correctCount + " 題，繼續努力！";
+    $("passText").textContent = allRight
+      ? "🏆 英文大小寫書寫小達人・金色星星獎勵"
+      : "還差 " + wrongCount + " 題就能獲得金色星星，看看答錯的題目再挑戰一次！";
+    $("errors").hidden = true;
+    $("review").textContent = "查看答錯題目 (" + wrongCount + ")";
+    $("result").scrollTop = 0;
+  }
+
+  $("clear").addEventListener("click", clearWriting);
+  $("undo").addEventListener("click", () => { strokes.pop(); redraw(); });
+  $("check").addEventListener("click", checkAnswer);
+  $("next").addEventListener("click", () => { index++; if (index >= 30) finish(); else showQuestion(); });
+  $("restart").addEventListener("click", start);
+  $("reshuffle").addEventListener("click", start);
+  $("review").addEventListener("click", () => {
+    const area = $("errors");
+    if (!area.hidden) { area.hidden = true; return; }
+    const bad = results.map((r, i) => ({ ...r, n: i + 1 })).filter(r => !r.correct);
+    area.hidden = false;
+    area.innerHTML = bad.length
+      ? "<h3 style='text-align:left'>錯題檢討</h3>" + bad.map(r =>
+          "<div class='row'>" +
+          (r.img ? "<img src='" + r.img + "' alt='第 " + r.n + " 題的書寫'>" : "") +
+          "<div class='meta'><b>第 " + r.n + " 題</b>　" +
+          (r.q.askUpper ? r.q.letter + " → 小寫" : r.q.letter.toLowerCase() + " → 大寫") +
+          "<div class='muted'>正確答案：" + r.expected + "｜" + hintOf(r.q) + "</div>" +
+          "<div class='muted' style='color:var(--red)'>" + r.reasons.join("；") + "</div></div>" +
+          "<b style='color:var(--red)'>需加強</b></div>").join("")
+      : "<p style='color:var(--green);font-weight:700'>太棒了！沒有錯題！</p>";
+  });
+
+  if ("ResizeObserver" in window) new ResizeObserver(resizeCanvas).observe(guide);
+  else window.addEventListener("resize", resizeCanvas);
+  window.addEventListener("orientationchange", () => setTimeout(resizeCanvas, 150));
+  resizeCanvas();
+  start();
+})();
+</script>
+</body>
+</html>
