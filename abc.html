@@ -24,6 +24,9 @@ header{display:flex;align-items:center;gap:12px;flex:none}
 header h1{font-size:clamp(18px,3.2vmin,26px);margin:0;color:#1e477d;white-space:nowrap}
 .progresswrap{flex:1;display:flex;align-items:center;gap:10px;min-width:0}
 .progressnum{font-size:clamp(15px,2.6vmin,20px);font-weight:800;white-space:nowrap;color:var(--blue)}
+.scorenum{display:flex;gap:6px;white-space:nowrap;font-weight:800;font-size:clamp(13px,2.4vmin,16px)}
+.scorenum .ok{color:var(--green);background:#e7f6ee;border-radius:99px;padding:3px 10px}
+.scorenum .no{color:var(--red);background:#fdeee7;border-radius:99px;padding:3px 10px}
 .bar{height:12px;background:#e8eef6;border-radius:99px;overflow:hidden;flex:1}
 .bar>div{height:100%;width:0;background:var(--blue2);transition:width .25s}
 .muted{color:var(--muted);font-size:13px}
@@ -79,6 +82,7 @@ footer{flex:none;text-align:center}
     <div class="progresswrap" aria-label="測驗進度">
       <div class="progressnum" id="progress">第 1 / 30 題</div>
       <div class="bar"><div id="bar"></div></div>
+      <div class="scorenum" aria-label="目前答對與答錯題數"><span class="ok">✓ 答對 <span id="liveCorrect">0</span></span><span class="no">✗ 答錯 <span id="liveWrong">0</span></span></div>
     </div>
     <button class="secondary" id="reshuffle" style="flex:none;padding:8px 12px">🔄 重新出題</button>
   </header>
@@ -632,6 +636,12 @@ function shapeVerdict(rec, expected) {
     $("feedback").textContent = ""; $("answer").textContent = "?";
   }
 
+  function updateLiveScore() {
+    const ok = results.filter(r => r.correct).length;
+    $("liveCorrect").textContent = ok;
+    $("liveWrong").textContent = results.length - ok;
+  }
+
   function showQuestion() {
     locked = false; uncertainCount = 0; clearWriting();
     const q = questions[index];
@@ -647,6 +657,7 @@ function shapeVerdict(rec, expected) {
   function start() {
     questions = makeQuestions(); index = 0; results = [];
     $("game").hidden = false; $("result").hidden = true;
+    updateLiveScore();
     showQuestion();
   }
 
@@ -687,6 +698,7 @@ function shapeVerdict(rec, expected) {
       else reasons.push("形狀不太像「" + expected + "」，再看一次題目寫寫看");
     }
     results.push({ q, correct, expected, reasons, img: snapshot() });
+    updateLiveScore();
     locked = true;
     $("answer").textContent = expected;
     if (correct) {
