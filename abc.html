@@ -136,6 +136,276 @@ footer{flex:none;text-align:center}
 </div>
 
 <script>
+// ===== 字形辨識：模板比對（離線、單頁可用） =====
+// 原理：把學生筆跡和字母模板都縮放成同一個小方格圖，再量兩邊筆跡的平均距離。
+// 距離越小越像。不看筆順、粗細，只看形狀；大小寫位置仍由碰線判斷負責。
+
+function arcPts(cx, cy, rx, ry, a0, a1, n) {
+  n = n || 16;
+  const pts = [];
+  for (let i = 0; i <= n; i++) {
+    const a = (a0 + (a1 - a0) * i / n) * Math.PI / 180;
+    pts.push([cx + rx * Math.cos(a), cy + ry * Math.sin(a)]);
+  }
+  return pts;
+}
+function cat() {
+  const out = [];
+  for (const part of arguments) for (const p of part) out.push(p);
+  return out;
+}
+
+// 每個字母：筆畫陣列，每筆是 [x,y] 點陣列，座標約在 0..1 方框內（y 向下）
+const TEMPLATES = {
+  A: [[[0.02,0.98],[0.5,0.02],[0.98,0.98]], [[0.24,0.66],[0.76,0.66]]],
+  B: [[[0.18,0.02],[0.18,0.98]],
+      cat([[0.18,0.02],[0.55,0.02]], arcPts(0.55,0.24,0.24,0.22,-90,90), [[0.18,0.46]]),
+      cat([[0.18,0.46],[0.58,0.46]], arcPts(0.58,0.72,0.27,0.26,-90,90), [[0.18,0.98]])],
+  C: [arcPts(0.52,0.5,0.42,0.47,-52,-308)],
+  D: [[[0.18,0.02],[0.18,0.98]],
+      cat([[0.18,0.02],[0.52,0.02]], arcPts(0.52,0.5,0.38,0.48,-90,90), [[0.18,0.98]])],
+  E: [[[0.82,0.02],[0.16,0.02],[0.16,0.98],[0.82,0.98]], [[0.16,0.5],[0.66,0.5]]],
+  F: [[[0.82,0.02],[0.16,0.02],[0.16,0.98]], [[0.16,0.46],[0.62,0.46]]],
+  G: [cat(arcPts(0.52,0.5,0.42,0.47,-52,-300), [[0.88,0.62],[0.88,0.54],[0.56,0.54]])],
+  H: [[[0.16,0.02],[0.16,0.98]], [[0.84,0.02],[0.84,0.98]], [[0.16,0.5],[0.84,0.5]]],
+  I: [[[0.5,0.02],[0.5,0.98]], [[0.24,0.02],[0.76,0.02]], [[0.24,0.98],[0.76,0.98]]],
+  J: [cat([[0.78,0.02],[0.78,0.7]], arcPts(0.5,0.7,0.28,0.28,0,180))],
+  K: [[[0.16,0.02],[0.16,0.98]], [[0.82,0.02],[0.2,0.5],[0.86,0.98]]],
+  L: [[[0.16,0.02],[0.16,0.98],[0.82,0.98]]],
+  M: [[[0.06,0.98],[0.06,0.02],[0.5,0.55],[0.94,0.02],[0.94,0.98]]],
+  N: [[[0.1,0.98],[0.1,0.02],[0.9,0.98],[0.9,0.02]]],
+  O: [arcPts(0.5,0.5,0.46,0.48,-90,270,24)],
+  P: [[[0.18,0.98],[0.18,0.02]],
+      cat([[0.18,0.02],[0.55,0.02]], arcPts(0.55,0.25,0.27,0.23,-90,90), [[0.18,0.48]])],
+  Q: [arcPts(0.5,0.5,0.46,0.48,-90,270,24), [[0.62,0.76],[0.92,1.0]]],
+  R: [[[0.18,0.98],[0.18,0.02]],
+      cat([[0.18,0.02],[0.55,0.02]], arcPts(0.55,0.25,0.27,0.23,-90,90), [[0.18,0.48]]),
+      [[0.46,0.48],[0.86,0.98]]],
+  S: [[[0.78,0.14],[0.6,0.04],[0.35,0.05],[0.2,0.16],[0.18,0.3],[0.3,0.42],[0.5,0.48],[0.7,0.55],[0.82,0.68],[0.8,0.84],[0.62,0.96],[0.38,0.97],[0.2,0.88]]],
+  T: [[[0.08,0.02],[0.92,0.02]], [[0.5,0.02],[0.5,0.98]]],
+  U: [cat([[0.1,0.02],[0.1,0.68]], arcPts(0.5,0.68,0.4,0.3,180,0), [[0.9,0.02]])],
+  V: [[[0.04,0.02],[0.5,0.98],[0.96,0.02]]],
+  W: [[[0.02,0.02],[0.2,0.98],[0.5,0.35],[0.8,0.98],[0.98,0.02]]],
+  X: [[[0.1,0.02],[0.9,0.98]], [[0.9,0.02],[0.1,0.98]]],
+  Y: [[[0.05,0.02],[0.5,0.45],[0.95,0.02]], [[0.5,0.45],[0.5,0.98]]],
+  Z: [[[0.1,0.02],[0.9,0.02],[0.1,0.98],[0.9,0.98]]],
+
+  a: [arcPts(0.44,0.55,0.34,0.42,-90,270,24), [[0.78,0.14],[0.78,0.97]]],
+  b: [[[0.2,0.02],[0.2,0.98]], arcPts(0.47,0.72,0.29,0.26,180,540,24)],
+  d: [arcPts(0.47,0.72,0.29,0.26,-90,270,24), [[0.76,0.02],[0.76,0.98]]],
+  e: [[[0.14,0.52],[0.84,0.52]], arcPts(0.5,0.52,0.36,0.42,0,-300,24)],
+  f: [[[0.72,0.06],[0.52,0.02],[0.38,0.1],[0.36,0.3],[0.36,0.98]], [[0.16,0.36],[0.62,0.36]]],
+  g: [arcPts(0.44,0.3,0.32,0.26,-90,270,24),
+      cat([[0.76,0.06],[0.76,0.72]], arcPts(0.5,0.72,0.26,0.24,0,180))],
+  h: [[[0.16,0.02],[0.16,0.98]],
+      cat([[0.16,0.6]], arcPts(0.48,0.58,0.32,0.2,180,360), [[0.8,0.98]])],
+  i: [[[0.5,0.32],[0.5,0.96]], [[0.5,0.06],[0.5,0.14]]],
+  j: [cat([[0.68,0.32],[0.68,0.72]], arcPts(0.42,0.72,0.26,0.24,0,180)), [[0.68,0.06],[0.68,0.14]]],
+  k: [[[0.18,0.02],[0.18,0.98]], [[0.75,0.35],[0.24,0.6],[0.8,0.98]]],
+  l: [[[0.5,0.02],[0.5,0.98]]],
+  m: [[[0.08,0.32],[0.08,0.98]],
+      cat([[0.08,0.55]], arcPts(0.29,0.55,0.21,0.2,180,360), [[0.5,0.98]]),
+      cat([[0.5,0.55]], arcPts(0.71,0.55,0.21,0.2,180,360), [[0.92,0.98]])],
+  n: [[[0.14,0.32],[0.14,0.98]],
+      cat([[0.14,0.58]], arcPts(0.48,0.58,0.34,0.24,180,360), [[0.82,0.98]])],
+  p: [[[0.2,0.04],[0.2,0.98]], arcPts(0.48,0.3,0.3,0.26,180,540,24)],
+  q: [[[0.8,0.04],[0.8,0.9],[0.68,0.98]], arcPts(0.5,0.3,0.3,0.26,-90,270,24)],
+  r: [[[0.16,0.32],[0.16,0.98]],
+      cat([[0.16,0.58]], arcPts(0.42,0.58,0.26,0.22,180,330))],
+  t: [[[0.5,0.04],[0.5,0.85],[0.66,0.96]], [[0.2,0.32],[0.8,0.32]]],
+  u: [cat([[0.12,0.32],[0.12,0.68]], arcPts(0.45,0.68,0.33,0.28,180,0), [[0.78,0.32]]),
+      [[0.78,0.32],[0.78,0.98]]],
+  y: [[[0.06,0.04],[0.48,0.42],[0.9,0.04]], [[0.48,0.42],[0.34,0.85],[0.18,0.96]]]
+};
+// 形狀與大寫相同的小寫，直接共用模板（大小寫由碰線位置判斷）
+TEMPLATES.c = TEMPLATES.C;
+TEMPLATES.o = TEMPLATES.O;
+TEMPLATES.s = TEMPLATES.S;
+TEMPLATES.v = TEMPLATES.V;
+TEMPLATES.w = TEMPLATES.W;
+TEMPLATES.x = TEMPLATES.X;
+TEMPLATES.z = TEMPLATES.Z;
+
+// 常見的另一種寫法（多給一個模板，符合任一就算像）
+const VARIANTS = {
+  I: [[[[0.5,0.02],[0.5,0.98]]]],
+  J: [[[[0.45,0.02],[0.95,0.02]], cat([[0.78,0.02],[0.78,0.7]], arcPts(0.5,0.7,0.28,0.28,0,180))]],
+  a: [[[[0.8,0.28],[0.62,0.15],[0.35,0.17],[0.17,0.38],[0.15,0.68],[0.3,0.9],[0.55,0.95],[0.8,0.8]],
+       [[0.8,0.2],[0.8,0.95]]]],
+  g: [[arcPts(0.45,0.25,0.3,0.22,-90,270,24),
+       [[0.75,0.1],[0.75,0.55]],
+       arcPts(0.48,0.78,0.28,0.2,-90,270,24)]],
+  l: [[[[0.5,0.02],[0.48,0.88],[0.62,0.98]]]],
+  y: [[[[0.06,0.04],[0.5,0.45],[0.9,0.04],[0.5,0.45],[0.38,0.96]]]],
+  t: [[[[0.5,0.04],[0.5,0.98]], [[0.2,0.32],[0.8,0.32]]]]
+};
+
+const GRID = 28;
+
+function sampleStroke(pts, step) {
+  const out = [];
+  for (let i = 0; i < pts.length; i++) {
+    if (i === 0) { out.push(pts[0]); continue; }
+    const [x1, y1] = pts[i - 1], [x2, y2] = pts[i];
+    const d = Math.hypot(x2 - x1, y2 - y1);
+    const n = Math.max(1, Math.floor(d / step));
+    for (let k = 1; k <= n; k++) out.push([x1 + (x2 - x1) * k / n, y1 + (y2 - y1) * k / n]);
+  }
+  return out;
+}
+
+// 把點集合縮放進 GRID x GRID（長寬各自拉滿，消除學生寫得胖瘦的差異），回傳有墨的格子清單
+function rasterize(points) {
+  if (!points.length) return [];
+  let minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9;
+  for (const [x, y] of points) {
+    if (x < minX) minX = x; if (x > maxX) maxX = x;
+    if (y < minY) minY = y; if (y > maxY) maxY = y;
+  }
+  let w = Math.max(maxX - minX, 1e-6), h = Math.max(maxY - minY, 1e-6);
+  // 像 l、i 這種幾乎一條直線的字母，寬度太小會被拉歪，先把方框補到至少 25% 的長寬比
+  if (w < 0.25 * h) { const cx = (minX + maxX) / 2; w = 0.25 * h; minX = cx - w / 2; }
+  if (h < 0.25 * w) { const cy = (minY + maxY) / 2; h = 0.25 * w; minY = cy - h / 2; }
+  const usable = GRID - 2;
+  const sx = usable / w, sy = usable / h;
+  const cells = new Set();
+  for (const [x, y] of points) {
+    const gx = Math.min(GRID - 1, Math.max(0, Math.round(1 + (x - minX) * sx)));
+    const gy = Math.min(GRID - 1, Math.max(0, Math.round(1 + (y - minY) * sy)));
+    cells.add(gx + "," + gy);
+  }
+  return [...cells].map(s => s.split(",").map(Number));
+}
+
+// 水平距離打折：學生寫字常帶一點傾斜，橫向偏移不要罰太重（鏡像字 b/d 的左右差異仍然夠大）
+const DX_WEIGHT = 0.65;
+function cellDist2(ax, ay, bx, by) {
+  const dx = (ax - bx) * DX_WEIGHT, dy = ay - by;
+  return dx * dx + dy * dy;
+}
+function meanNearest(A, B) {
+  if (!A.length || !B.length) return 99;
+  let sum = 0;
+  for (const [ax, ay] of A) {
+    let best = 1e9;
+    for (const [bx, by] of B) {
+      const d = cellDist2(ax, ay, bx, by);
+      if (d < best) best = d;
+    }
+    sum += Math.sqrt(best);
+  }
+  return sum / A.length;
+}
+function chamfer(A, B) {
+  return (meanNearest(A, B) + meanNearest(B, A)) / 2;
+}
+// 距離超過門檻的格子比例（鏡像字 b/d 這種「一半對、一半錯位」的會被抓出來）
+function farFrac(A, B, th) {
+  if (!A.length || !B.length) return 1;
+  let f = 0;
+  for (const [ax, ay] of A) {
+    let best = 1e9;
+    for (const [bx, by] of B) {
+      const d = cellDist2(ax, ay, bx, by);
+      if (d < best) best = d;
+    }
+    if (Math.sqrt(best) > th) f++;
+  }
+  return f / A.length;
+}
+function shapeScore(A, B) {
+  return chamfer(A, B) + 1.5 * (farFrac(A, B, 2) + farFrac(B, A, 2)) / 2;
+}
+
+// 模板格子預先算好
+const TEMPLATE_CELLS = {};
+function templateCellsFor(letter) {
+  if (TEMPLATE_CELLS[letter]) return TEMPLATE_CELLS[letter];
+  const variants = [TEMPLATES[letter], ...(VARIANTS[letter] || [])];
+  const list = variants.map(strokes => {
+    const pts = [];
+    for (const st of strokes) for (const p of sampleStroke(st, 0.012)) pts.push(p);
+    return rasterize(pts);
+  });
+  TEMPLATE_CELLS[letter] = list;
+  return list;
+}
+
+// studentStrokes: [{x,y}...] 陣列的陣列（畫布像素座標）
+// 回傳 {score, bestLetter, bestScore}：score 是與預期字母的距離（越小越像）
+function recognizeShape(studentStrokes, expected) {
+  const pts = [];
+  for (const st of studentStrokes) {
+    const arr = st.map(p => [p.x, p.y]);
+    for (const p of sampleStroke(arr, 2)) pts.push(p);
+  }
+  const cells = rasterize(pts);
+  if (cells.length < 4) return { score: 99, bestLetter: null, bestScore: 99 };
+  let bestLetter = null, bestScore = 99, expectedScore = 99;
+  for (const letter of Object.keys(TEMPLATES)) {
+    let s = 99;
+    for (const tc of templateCellsFor(letter)) s = Math.min(s, shapeScore(cells, tc));
+    if (letter === expected) expectedScore = s;
+    if (s < bestScore) { bestScore = s; bestLetter = letter; }
+  }
+  return { score: expectedScore, bestLetter, bestScore };
+}
+
+// 形狀門檻（格子距離）：<= PASS 算像，>= FAIL 算不像，中間算不確定
+const SHAPE_PASS = 1.55;
+const SHAPE_FAIL = 2.25;
+
+// 特殊檢查：a/o、Q/O 只差一小筆，模板距離分不出來，用特徵補判。
+// 回傳 fail 原因字串，或 null（沒問題）
+function specialChecks(studentStrokes, expected) {
+  const pts = [];
+  for (const st of studentStrokes) {
+    const arr = st.map(p => [p.x, p.y]);
+    for (const [x, y] of sampleStroke(arr, 3)) pts.push({ x, y });
+  }
+  if (pts.length < 6) return null;
+  let minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9;
+  for (const p of pts) {
+    if (p.x < minX) minX = p.x; if (p.x > maxX) maxX = p.x;
+    if (p.y < minY) minY = p.y; if (p.y > maxY) maxY = p.y;
+  }
+  const W = Math.max(maxX - minX, 1e-6), H = Math.max(maxY - minY, 1e-6);
+  if (expected === "a") {
+    // a 右邊要有一根直直的豎線：右側 20% 區域在上下五段裡至少四段都有筆跡
+    const bands = new Set();
+    for (const p of pts) {
+      if (p.x >= minX + 0.8 * W) bands.add(Math.min(4, Math.floor((p.y - minY) / H * 5)));
+    }
+    if (bands.size <= 3) return "a 右邊要有一根直直的豎線喔";
+  }
+  if (expected === "Q") {
+    // Q 右下角要有一撇尾巴伸到角落
+    const hasTail = pts.some(p => p.x >= minX + 0.86 * W && p.y >= minY + 0.92 * H);
+    if (!hasTail) return "Q 右下角要有一撇尾巴喔";
+  }
+  if (expected === "O" || expected === "o") {
+    const hasTail = pts.some(p => p.x >= minX + 0.85 * W && p.y >= minY + 0.9 * H);
+    if (hasTail) return "這比較像 Q，O 不用加尾巴喔";
+  }
+  return null;
+}
+
+// 綜合判定：回傳 "pass" / "fail" / "uncertain"
+// 若最像的是另一個字母（大小寫視為同一個字母，交給碰線判斷分大小寫）
+// 而且明顯比預期字母像很多，代表學生寫的是別的字母，直接判 fail。
+function shapeVerdict(rec, expected) {
+  const otherLetter = rec.bestLetter &&
+    rec.bestLetter.toLowerCase() !== expected.toLowerCase();
+  const clearlyOther = otherLetter && rec.bestScore <= SHAPE_PASS &&
+    rec.bestScore < rec.score * 0.7;
+  if (clearlyOther) return { verdict: "fail", looksLike: rec.bestLetter };
+  if (rec.score <= SHAPE_PASS) return { verdict: "pass", looksLike: null };
+  if (rec.score >= SHAPE_FAIL) return { verdict: "fail", looksLike: otherLetter ? rec.bestLetter : null };
+  return { verdict: "uncertain", looksLike: null };
+}
+
+</script>
+<script>
 (() => {
   const $ = id => document.getElementById(id);
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -151,6 +421,22 @@ footer{flex:none;text-align:center}
 
   let questions = [], index = 0, results = [], strokes = [], locked = false;
   let activePointer = null, currentStroke = null;
+  let uncertainCount = 0;
+
+  // 忽略離主體很遠的誤觸小筆（手掌碰到螢幕多出來的一點），i、j 的點離主體近，不會被刪
+  function filterStrays(list, H) {
+    if (list.length <= 1) return list;
+    const info = list.map(st => {
+      let len = 0, cx = 0, cy = 0;
+      st.forEach((p, i) => { cx += p.x; cy += p.y; if (i) len += Math.hypot(p.x - st[i-1].x, p.y - st[i-1].y); });
+      return { st, len, cx: cx / st.length, cy: cy / st.length };
+    });
+    let tw = 0, mx = 0, my = 0;
+    info.forEach(o => { const w = Math.max(o.len, 1); tw += w; mx += o.cx * w; my += o.cy * w; });
+    mx /= tw; my /= tw;
+    const kept = info.filter(o => !(o.len < 0.015 * H && Math.hypot(o.cx - mx, o.cy - my) > 0.45 * H));
+    return kept.length ? kept.map(o => o.st) : list;
+  }
   let lastW = 0, lastH = 0;
 
   const canvas = $("canvas"), ctx = canvas.getContext("2d"), guide = $("guide");
@@ -193,7 +479,7 @@ footer{flex:none;text-align:center}
   function judgeWriting(strokes, H, answer) {
     const topY = LINE.top * H, midY = LINE.mid * H, baseY = LINE.base * H, descY = LINE.desc * H;
     const S = midY - topY;              // 一格的高度
-    const tol = 0.34 * S;               // 碰線容許誤差
+    const tol = 0.42 * S;               // 碰線容許誤差
     const reasons = [];
 
     // i、j 的點是獨立一小筆且在中線上面，判斷高度時不算那個點
@@ -217,10 +503,10 @@ footer{flex:none;text-align:center}
 
     const reachTop = minY <= topY + tol;
     const reachMid = minY <= midY + tol;
-    const tooTall = minY < midY - 0.55 * S;
+    const tooTall = minY < midY - 0.7 * S;
     const reachBase = maxY >= baseY - tol;
     const tooLow = maxY > baseY + 0.45 * (descY - baseY);
-    const reachDesc = maxY >= baseY + 0.45 * (descY - baseY);
+    const reachDesc = maxY >= baseY + 0.3 * (descY - baseY);
 
     if (!isLower || ASCENDER.has(answer)) {
       // 大寫 A–Z、小寫 b d f h k l：上線 + 下線
@@ -232,7 +518,7 @@ footer{flex:none;text-align:center}
       if (tooTall) reasons.push("寫太高了，這個字母從中線開始寫");
       if (!reachDesc) reasons.push("這個字母要往下伸，寫到下線下面喔");
     } else if (answer === "t") {
-      if (minY > midY - 0.22 * S) reasons.push("t 要寫得比中線高一點喔");
+      if (minY > midY - 0.15 * S) reasons.push("t 要寫得比中線高一點喔");
       if (!reachBase) reasons.push("下面還沒碰到下線喔");
       if (tooLow) reasons.push("寫太下面了，要停在下線喔");
     } else {
@@ -347,7 +633,7 @@ footer{flex:none;text-align:center}
   }
 
   function showQuestion() {
-    locked = false; clearWriting();
+    locked = false; uncertainCount = 0; clearWriting();
     const q = questions[index];
     $("prompt").textContent = q.askUpper ? q.letter : q.letter.toLowerCase();
     $("direction").textContent = q.askUpper ? "看到大寫，請寫出對應的小寫字母" : "看到小寫，請寫出對應的大寫字母";
@@ -368,20 +654,46 @@ footer{flex:none;text-align:center}
     if (locked) return;
     const q = questions[index];
     const expected = answerOf(q);
-    const verdict = judgeWriting(strokes, lastH, expected);
-    if (!verdict.ok && verdict.reasons[0] === "請先在格子內寫出字母喔！") {
+    const cleanStrokes = filterStrays(strokes, lastH);
+    const pos = judgeWriting(cleanStrokes, lastH, expected);
+    if (!pos.ok && pos.reasons[0] === "請先在格子內寫出字母喔！") {
       $("feedback").innerHTML = "✏️ 請先在格子內寫出字母喔！";
       $("feedback").style.color = "#b7791f";
       return;
     }
-    results.push({ q, correct: verdict.ok, expected, reasons: verdict.reasons, img: snapshot() });
+    const rec = recognizeShape(cleanStrokes, expected);
+    const sv = shapeVerdict(rec, expected);
+    const special = specialChecks(cleanStrokes, expected);
+    let shapeVerdictFinal = sv.verdict;
+    // a/o、Q/O 這種只差一小筆的特徵檢查，先當不確定處理：請學生重寫，不直接判錯
+    if (special && shapeVerdictFinal === "pass") shapeVerdictFinal = "uncertain";
+
+    // 形狀看不清楚：先不算錯，請學生重寫（每題最多 2 次）
+    if (shapeVerdictFinal === "uncertain" && uncertainCount < 2) {
+      uncertainCount++;
+      $("feedback").innerHTML = special
+        ? "🤔 " + special + "，請按「清除重寫」再寫一次（不算錯）"
+        : "🤔 寫得不太清楚喔，請按「清除重寫」再寫一次（不算錯）";
+      $("feedback").style.color = "#b7791f";
+      return;
+    }
+
+    const shapeOk = shapeVerdictFinal === "pass";
+    const correct = pos.ok && shapeOk;
+    const reasons = [...pos.reasons];
+    if (!shapeOk) {
+      if (special) reasons.push(special);
+      else if (sv.looksLike) reasons.push("形狀不太像「" + expected + "」，比較像「" + sv.looksLike + "」");
+      else reasons.push("形狀不太像「" + expected + "」，再看一次題目寫寫看");
+    }
+    results.push({ q, correct, expected, reasons, img: snapshot() });
     locked = true;
     $("answer").textContent = expected;
-    if (verdict.ok) {
-      $("feedback").innerHTML = "✓ 太棒了！書寫位置正確！";
+    if (correct) {
+      $("feedback").innerHTML = "✓ 太棒了！形狀和位置都正確！";
       $("feedback").style.color = "var(--green)";
     } else {
-      $("feedback").innerHTML = "再加油！正確答案是「" + expected + "」<span class='why'>" + verdict.reasons.join("；") + "</span>";
+      $("feedback").innerHTML = "再加油！正確答案是「" + expected + "」<span class='why'>" + reasons.join("；") + "</span>";
       $("feedback").style.color = "var(--red)";
     }
     $("check").disabled = true; $("clear").disabled = true; $("undo").disabled = true;
